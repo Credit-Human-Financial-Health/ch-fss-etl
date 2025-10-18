@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "credithumandf"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzurePostgreSql1_password": {
+			"value": ""
+		},
+		"PostgreSql_password": {
+			"value": ""
+		},
+		"AzurePostgreSql1_properties_typeProperties_server": {
+			"value": "credithumandb.postgres.database.azure.com"
+		},
+		"AzurePostgreSql1_properties_typeProperties_database": {
+			"value": "credit_human_db"
+		},
+		"AzurePostgreSql1_properties_typeProperties_username": {
+			"value": "credithumanadmin"
+		},
+		"PostgreSql_properties_typeProperties_server": {
+			"value": "credithumandb.postgres.database.azure.com"
+		},
+		"PostgreSql_properties_typeProperties_database": {
+			"value": "credit_human_db"
+		},
+		"PostgreSql_properties_typeProperties_username": {
+			"value": "credithumanadmin"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
