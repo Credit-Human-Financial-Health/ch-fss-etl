@@ -1,0 +1,9 @@
+{
+	"name": "credithumandf",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "301e5994-1676-4a56-8813-e8cf05a1bbd9",
+		"tenantId": "513294a0-3e20-41b2-a970-6d30bf1546fa"
+	}
+}

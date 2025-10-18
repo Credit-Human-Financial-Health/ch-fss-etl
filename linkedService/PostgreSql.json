@@ -1,0 +1,17 @@
+{
+	"name": "PostgreSql",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "PostgreSqlV2",
+		"typeProperties": {
+			"server": "credithumandb.postgres.database.azure.com",
+			"port": 5432,
+			"database": "credit_human_db",
+			"username": "credithumanadmin",
+			"sslMode": 2,
+			"authenticationType": "Basic",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQENCQUJBQ0VCLTcxQTUtNDI1NS1BNEZDLTI1RkY1NDU3QkU1Ml8wZmZhZGM4OC03ZmVlLTQ3NzItOThhMC1iNWFjYzY0NGU4YTgiDQp9"
+		}
+	}
+}
