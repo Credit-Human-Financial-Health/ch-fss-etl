@@ -138,14 +138,43 @@
 				"typeProperties": {
 					"variableName": "ETLSTARTTIME",
 					"value": {
-						"value": "@formatDateTime(utcNow(),'yyyy-MM-dd')",
+						"value": "@formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "Audit_in_data_load",
-				"type": "SqlServerStoredProcedure",
+				"name": "Notcopiedfiles",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "End_Audit",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "start_audit",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ETLENDTIME",
+					"value": [
+						"@formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')"
+					]
+				}
+			},
+			{
+				"name": "start_audit",
+				"type": "Script",
 				"dependsOn": [
 					{
 						"activity": "ForEachfile",
@@ -161,15 +190,27 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "postgresqltable"
-					}
-				]
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzurePostgreSql1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "insert into fss1.sp_audit(batchid, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, [status], errormessage,created_DTTM)\nvalues (''@{pipeline().parameters.batchid}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_DTTM}'\n);",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
 			},
 			{
-				"name": "Audit_out_data_load",
-				"type": "SqlServerStoredProcedure",
+				"name": "End_Audit",
+				"type": "Script",
 				"dependsOn": [
 					{
 						"activity": "ForEachfile",
@@ -186,47 +227,56 @@
 					"secureInput": false
 				},
 				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": {
-						"value": "@activity('Copy data').output",
-						"type": "Expression"
-					},
-					"storedProcedureParameters": {
-						"value": "@activity('Copy data').output.faliure",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Notcopiedfiles",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Audit_out_data_load",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Audit_in_data_load",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
+				"linkedServiceName": {
+					"referenceName": "AzurePostgreSql1",
+					"type": "LinkedServiceReference"
 				},
-				"userProperties": [],
 				"typeProperties": {
-					"variableName": "ETLENDTIME",
-					"value": [
-						"@formatDateTime(utcNow(),'yyyy-MM-dd')"
-					]
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "insert into fss1.sp_audit(batchid, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, [status], errormessage,created_DTTM)\nvalues (''@{pipeline().parameters.batchid}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_DTTM}'\n);"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
 		],
+		"parameters": {
+			"Batchid": {
+				"type": "int"
+			},
+			"datasetname": {
+				"type": "string"
+			},
+			"tablename": {
+				"type": "string"
+			},
+			"taskname": {
+				"type": "string"
+			},
+			"etlstarttime": {
+				"type": "string"
+			},
+			"etlendtime": {
+				"type": "string"
+			},
+			"deltacondition": {
+				"type": "string"
+			},
+			"deltarecordsread": {
+				"type": "string"
+			},
+			"status": {
+				"type": "string"
+			},
+			"errormessage": {
+				"type": "string"
+			},
+			"created_dttm": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"ETLSTARTTIME": {
 				"type": "String"
