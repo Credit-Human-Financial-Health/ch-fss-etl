@@ -136,7 +136,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "ETLSTARTTIME",
+					"variableName": "ETLSTARTTIMEvariable",
 					"value": {
 						"value": "@formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')",
 						"type": "Expression"
@@ -166,7 +166,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "ETLENDTIME",
+					"variableName": "ETLENDTIMEvariable",
 					"value": [
 						"@formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')"
 					]
@@ -200,7 +200,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "insert into fss1.audit_pipeline(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, status, errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_Id}',\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.Created_DTTM}'\n);",
+								"value": "insert into fss1.audit_pipeline1(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, status, errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_id}',\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_dttm}'\n);",
 								"type": "Expression"
 							}
 						}
@@ -236,7 +236,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "insert into fss1.audit_pipeline(batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, [status], errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.batch_id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_DTTM}'\n);",
+								"value": "insert into fss1.audit_pipeline1(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, [status], errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_id}'\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_dttm}'\n);",
 								"type": "Expression"
 							}
 						}
@@ -264,11 +264,11 @@
 			},
 			"etlstarttime": {
 				"type": "string",
-				"defaultValue": "@variables('etlstarttime')"
+				"defaultValue": "NULL"
 			},
 			"etlendtime": {
 				"type": "string",
-				"defaultValue": "@variables('etlendtime')"
+				"defaultValue": "NULL"
 			},
 			"deltacondition": {
 				"type": "string",
@@ -280,15 +280,14 @@
 			},
 			"status": {
 				"type": "string",
-				"defaultValue": "h"
+				"defaultValue": "success"
 			},
 			"errormessage": {
-				"type": "string",
-				"defaultValue": "i"
+				"type": "string"
 			},
 			"created_dttm": {
 				"type": "string",
-				"defaultValue": "j"
+				"defaultValue": "DEFAULT"
 			},
 			"audit_id": {
 				"type": "int",
@@ -296,10 +295,10 @@
 			}
 		},
 		"variables": {
-			"ETLSTARTTIME": {
+			"ETLSTARTTIMEvariable": {
 				"type": "String"
 			},
-			"ETLENDTIME": {
+			"ETLENDTIMEvariable": {
 				"type": "Array"
 			}
 		},
