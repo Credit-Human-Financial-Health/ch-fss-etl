@@ -200,7 +200,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "insert into fss1.audit_pipeline1(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, status, errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_id}',\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_dttm}'\n);",
+								"value": "insert into fss1.audit_pipeline(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, status, errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_id}',\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_dttm}'\n);",
 								"type": "Expression"
 							}
 						}
@@ -236,7 +236,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "insert into fss1.audit_pipeline1(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, [status], errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_id}'\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_dttm}'\n);",
+								"value": "insert into fss1.audit_pipeline(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, [status], errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_id}'\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_dttm}'\n);",
 								"type": "Expression"
 							}
 						}
