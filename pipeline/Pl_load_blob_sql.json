@@ -7,7 +7,7 @@
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "dataloaddate",
+						"activity": "data_load_date",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -127,7 +127,7 @@
 				}
 			},
 			{
-				"name": "dataloaddate",
+				"name": "data_load_date",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"policy": {
@@ -262,11 +262,11 @@
 			},
 			"etlstarttime": {
 				"type": "string",
-				"defaultValue": "2025-10-24 08:11:50.725 +0530"
+				"defaultValue": "2025-10-27 09:30:50.725 +0530"
 			},
 			"etlendtime": {
 				"type": "string",
-				"defaultValue": "2025-10-24 08:11:50.725 +0530"
+				"defaultValue": "2025-10-27 09:30:50.725 +0530"
 			},
 			"deltacondition": {
 				"type": "string",
@@ -285,7 +285,7 @@
 			},
 			"created_dttm": {
 				"type": "string",
-				"defaultValue": "2025-10-24 08:20:35.827 +0530"
+				"defaultValue": "2025-10-27 09:30:35.827 +0530"
 			},
 			"audit_id": {
 				"type": "int",
