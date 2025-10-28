@@ -18,7 +18,7 @@
 						"referenceName": "incomingfilesfolder",
 						"type": "DatasetReference"
 					},
-					"name": "sink1",
+					"name": "sink",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureBlobStorage1",
 						"type": "LinkedServiceReference"
@@ -165,7 +165,7 @@
 				"          MISCEXPENSEAMOUNT as string",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> sink"
 			]
 		}
 	}
