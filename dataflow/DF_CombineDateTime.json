@@ -94,9 +94,9 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     inferDriftedColumnTypes: true,",
 				"     limit: 100,",
-				"     ignoreNoFilesFound: false) ~> source",
+				"     ignoreNoFilesFound: false,",
+				"     partitionBy('hash', 1)) ~> source",
 				"source derive(transaction_date = toTimestamp(\r",
 				"  concat(toString(POSTDATE, 'yyyy-MM-dd'), ' ', toString(POSTTIME)),\r",
 				"  'yyyy-MM-dd HH:mm:ss.SSS'\r",
@@ -164,8 +164,10 @@
 				"          TERMINATIONFEE as string,",
 				"          MISCEXPENSEAMOUNT as string",
 				"     ),",
+				"     partitionFileNames:['transaction.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink"
 			]
 		}
 	}
