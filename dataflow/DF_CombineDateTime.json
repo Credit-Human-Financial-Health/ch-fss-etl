@@ -105,7 +105,7 @@
 				"  toString(ACTIONCODE) == 'D', 1,\r",
 				"  toString(ACTIONCODE) == 'W', 2,\r",
 				"  toString(ACTIONCODE) == 'F', 3,\r",
-				"  0\r",
+				"  toString(ACTIONCODE) == 'C', 0\r",
 				")) ~> CombineDateTime",
 				"CombineDateTime sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
