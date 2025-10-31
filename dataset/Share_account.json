@@ -1,5 +1,5 @@
 {
-	"name": "AzurePostgreSqlTable1",
+	"name": "Share_account",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzurePostgreSql1",
