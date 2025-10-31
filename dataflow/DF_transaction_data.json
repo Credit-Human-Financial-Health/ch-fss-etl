@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "incomingfilesfolder",
+						"referenceName": "CH_files",
 						"type": "DatasetReference"
 					},
 					"name": "sink",
@@ -150,6 +150,8 @@
 				"          PREVAVAILBALANCE as string,",
 				"          SUBSOURCE as string,",
 				"          CONFIRMATIONSEQ as string,",
+				"          MICRACCTNUM as string,",
+				"          MICRRT as string,",
 				"          RECURRINGTRAN as string,",
 				"          FEEEXMTCRTSYAMT as string,",
 				"          ESCROWUNPAIDBALCHG as string,",
@@ -172,7 +174,6 @@
 				"          MISCEXPENSEAMOUNT as string",
 				"     ),",
 				"     partitionFileNames:['transaction.csv'],",
-				"     skipDuplicateMapInputs: true,",
 				"     partitionBy('hash', 1)) ~> sink"
 			]
 		}

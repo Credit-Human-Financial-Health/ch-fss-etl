@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "PWC_Extract_Account_2025_10_24.csv",
 				"container": "incomingfiles"
 			},
 			"columnDelimiter": "|",
