@@ -342,7 +342,8 @@
 				"          available_balance = BALANCE,",
 				"          branch = BRANCH,",
 				"          share_type_code_id = TYPE,",
-				"          account_id = PWC_Key",
+				"          account_id = PWC_Key,",
+				"          product_id = TYPE",
 				"     ),",
 				"     partitionBy('hash', 1)) ~> sink1"
 			]
