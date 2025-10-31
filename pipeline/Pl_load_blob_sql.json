@@ -111,7 +111,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "AzurePostgreSqlTable1",
+									"referenceName": "transaction",
 									"type": "DatasetReference"
 								}
 							]
