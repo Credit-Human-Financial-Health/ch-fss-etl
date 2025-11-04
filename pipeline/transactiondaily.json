@@ -1,9 +1,9 @@
 {
-	"name": "RefreshMaterializedViewsPipeline",
+	"name": "transactiondaily",
 	"properties": {
 		"activities": [
 			{
-				"name": "Script1",
+				"name": "transactiondaily",
 				"type": "Script",
 				"dependsOn": [],
 				"policy": {
@@ -21,7 +21,8 @@
 				"typeProperties": {
 					"scripts": [
 						{
-							"type": "Query"
+							"type": "Query",
+							"text": "WITH share_ids_per_group AS (\n  SELECT share_id\n  FROM fss1.ch_share_account_1\n),\ntransactions_daily AS (\n  SELECT\n    sag.share_id,\n    ct.transaction_date::date AS stat_date,\n    ct.transaction_type_code_id,\n    SUM(ct.transaction_amount) AS total_amount\n  FROM fss1.ch_transaction_1 ct\n  JOIN share_ids_per_group sag ON ct.share_id = sag.share_id\n  WHERE ct.transaction_type_code_id IN (1, 2)\n  GROUP BY sag.share_id, stat_date, ct.transaction_type_code_id\n)\nSELECT * FROM transactions_daily;\nINSERT INTO fss1.share_group_financial_stat (\nshare_id,\nfinancial_stat_type_code_id,\ndate,\nvalue\n)\nSELECT\n  share_id,\n  transaction_type_code_id AS financial_stat_type_code_id,\n  stat_date,\n  total_amount\nFROM transactions_daily;\n"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
