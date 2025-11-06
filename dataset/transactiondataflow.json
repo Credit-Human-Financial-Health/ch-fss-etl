@@ -1,5 +1,5 @@
 {
-	"name": "CH_files",
+	"name": "transactiondataflow",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",

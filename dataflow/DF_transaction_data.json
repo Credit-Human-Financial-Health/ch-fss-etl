@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "incomingfilesfolder",
+						"referenceName": "transactiondataflow",
 						"type": "DatasetReference"
 					},
 					"name": "source"
@@ -15,10 +15,11 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "CH_files",
+						"referenceName": "transactiondataflow",
 						"type": "DatasetReference"
 					},
 					"name": "sink",
+					"description": "Export data to ",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureBlobStorage1",
 						"type": "LinkedServiceReference"
@@ -71,6 +72,8 @@
 				"          PREVAVAILBALANCE as string,",
 				"          SUBSOURCE as string,",
 				"          CONFIRMATIONSEQ as string,",
+				"          MICRACCTNUM as string,",
+				"          MICRRT as string,",
 				"          RECURRINGTRAN as string,",
 				"          FEEEXMTCRTSYAMT as string,",
 				"          ESCROWUNPAIDBALCHG as string,",

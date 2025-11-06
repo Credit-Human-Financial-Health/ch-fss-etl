@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "CH_files",
+						"referenceName": "transactiondataflow",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -105,7 +105,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "CH_files",
+									"referenceName": "transactiondataflow",
 									"type": "DatasetReference"
 								}
 							],
