@@ -70,10 +70,10 @@
 						"writeBatchSize": 1000000,
 						"writeBatchTimeout": "00:30:00",
 						"preCopyScript": {
-							"value": "UPDATE fss1.watermark_table\nSET date = CAST('@{variables('currentDateTime')}' AS TIMESTAMPTZ),\n    lines_copied = @{variables('rowsCopied')}\nWHERE source_table = 'ch_transaction_1 ct';",
+							"value": "UPDATE fss1.watermark_table\nSET date = CAST('@{variables('currentDateTime')}' AS TIMESTAMPTZ),\n    lines_copied = @{variables('rowsCopied')}\nWHERE \"source_table\" = 'ch_transaction_1 ct';",
 							"type": "Expression"
 						},
-						"writeMethod": "BulkInsert"
+						"writeMethod": "CopyCommand"
 					},
 					"enableStaging": false,
 					"translator": {
@@ -231,7 +231,7 @@
 				"type": "String"
 			},
 			"rowsCopied": {
-				"type": "String"
+				"type": "Boolean"
 			}
 		},
 		"annotations": []
