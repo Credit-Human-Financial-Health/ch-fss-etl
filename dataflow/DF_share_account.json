@@ -305,7 +305,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     partitionBy('hash', 1)) ~> source",
-				"source derive(share_id = concat(PWC_Key,ID),",
+				"source derive(share_id = concat(PWC_Key, ID),",
 				"     partitionBy('hash', 1)) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -338,11 +338,11 @@
 				"          account_id = PWC_Key,",
 				"          min_balance = MINIMUMBALANCE,",
 				"          open_date = OPENDATE,",
-				"          product_id = TYPE,",
 				"          close_date = CLOSEDATE,",
+				"          share_type_code_id = TYPE,",
 				"          original_balance = ORIGINALBALANCE,",
 				"          available_balance = BALANCE,",
-				"          share_type_code_id = TYPE",
+				"          product_id = TYPE",
 				"     ),",
 				"     partitionBy('hash', 1)) ~> sink1"
 			]
