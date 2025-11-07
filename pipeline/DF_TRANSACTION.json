@@ -94,22 +94,11 @@
 							{
 								"source": {
 									"name": "Transaction_amount",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "transaction_amount",
-									"type": "Decimal",
-									"physicalType": "numeric"
-								}
-							},
-							{
-								"source": {
-									"name": "NEWBALANCE",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "balance",
+									"name": "transaction_amount",
 									"type": "Decimal",
 									"physicalType": "numeric"
 								}
@@ -160,6 +149,18 @@
 									"name": "share_id",
 									"type": "Int64",
 									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
+									"name": "NEWBALANCE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "balance",
+									"type": "Decimal",
+									"physicalType": "numeric"
 								}
 							}
 						],
