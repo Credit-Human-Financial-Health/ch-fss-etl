@@ -141,15 +141,10 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "End_Audit",
+						"activity": "ForEachfile",
 						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "start_audit",
-						"dependencyConditions": [
-							"Succeeded"
+							"Succeeded",
+							"Failed"
 						]
 					}
 				],
@@ -168,7 +163,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "ForEachfile",
+						"activity": "Notcopiedfiles",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -204,9 +199,9 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "ForEachfile",
+						"activity": "Notcopiedfiles",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
