@@ -1,5 +1,5 @@
 {
-	"name": "Pl_load_blob_sql",
+	"name": "incrementalload_blob_sql",
 	"properties": {
 		"activities": [
 			{
