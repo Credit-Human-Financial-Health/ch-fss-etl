@@ -7,7 +7,7 @@
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "data_load_date",
+						"activity": "Start_time",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -120,7 +120,7 @@
 				}
 			},
 			{
-				"name": "data_load_date",
+				"name": "Start_time",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"policy": {
@@ -129,22 +129,21 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "ETLSTARTTIMEvariable",
+					"variableName": "Start_time",
 					"value": {
-						"value": "@formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')",
+						"value": "@utcNow()",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "Notcopiedfiles",
+				"name": "End_time",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
 						"activity": "ForEachfile",
 						"dependencyConditions": [
-							"Succeeded",
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
@@ -154,8 +153,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "ETLENDTIMEvariable",
-					"value": "[\"@formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')\"]"
+					"variableName": "End_time",
+					"value": {
+						"value": "@utcNow()",
+						"type": "Expression"
+					}
 				}
 			},
 			{
@@ -163,7 +165,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Notcopiedfiles",
+						"activity": "End_time",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -184,45 +186,9 @@
 				"typeProperties": {
 					"scripts": [
 						{
-							"type": "Query",
+							"type": "NonQuery",
 							"text": {
-								"value": "insert into fss1.audit_pipeline(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, status, errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_id}',\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_dttm}'\n);",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
-				"name": "End_Audit",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Notcopiedfiles",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzurePostgreSql1",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "insert into fss1.audit_pipeline(audit_id, batch_id, datasetname, tablename, taskname, etlstarttime, etlendtime, deltacondition, deltarecordsread, [status], errormessage,created_DTTM)\nvalues ('@{pipeline().parameters.audit_id}'\n'@{pipeline().parameters.Batch_Id}',\n'@{pipeline().parameters.datasetname}',\n'@{pipeline().parameters.tablename}',\n'@{pipeline().parameters.taskname}',\n'@{pipeline().parameters.etlstarttime}',\n'@{pipeline().parameters.etlendtime}',\n'@{pipeline().parameters.deltacondition}',\n'@{pipeline().parameters.deltarecordsread}',\n'@{pipeline().parameters.status}',\n'@{pipeline().parameters.errormessage}',\n'@{pipeline().parameters.created_dttm}'\n);",
+								"value": "insert into PipelineRunStatus values ('@{pipeline().Pipeline}','{pipeline().RunId}','{formatDateTime(pipeline().TriggerTime'yyyy-MM-dd HH:mm:ss')}',@'{pipeline().TriggerType}',datediff(secound,'@{variables('Start_time')}','@{variables('End_time')}'))",
 								"type": "Expression"
 							}
 						}
@@ -231,63 +197,12 @@
 				}
 			}
 		],
-		"parameters": {
-			"Batch_Id": {
-				"type": "string",
-				"defaultValue": "account"
-			},
-			"datasetname": {
-				"type": "string",
-				"defaultValue": "transaction"
-			},
-			"tablename": {
-				"type": "string",
-				"defaultValue": "account_idb"
-			},
-			"taskname": {
-				"type": "string",
-				"defaultValue": "updated"
-			},
-			"etlstarttime": {
-				"type": "string",
-				"defaultValue": "2025-10-27 09:30:50.725 +0530"
-			},
-			"etlendtime": {
-				"type": "string",
-				"defaultValue": "2025-10-27 09:30:50.725 +0530"
-			},
-			"deltacondition": {
-				"type": "string",
-				"defaultValue": "Null"
-			},
-			"deltarecordsread": {
-				"type": "string",
-				"defaultValue": "Null"
-			},
-			"status": {
-				"type": "string",
-				"defaultValue": "success"
-			},
-			"errormessage": {
-				"type": "string"
-			},
-			"created_dttm": {
-				"type": "string",
-				"defaultValue": "2025-10-27 09:30:35.827 +0530"
-			},
-			"audit_id": {
-				"type": "int",
-				"defaultValue": 5
-			}
-		},
 		"variables": {
-			"ETLSTARTTIMEvariable": {
-				"type": "String",
-				"defaultValue": "2025-10-24 08:11:50.725 +0530"
+			"Start_time": {
+				"type": "String"
 			},
-			"ETLENDTIMEvariable": {
-				"type": "String",
-				"defaultValue": "2025-10-24 08:11:50.725 +0530"
+			"End_time": {
+				"type": "String"
 			}
 		},
 		"annotations": [],
