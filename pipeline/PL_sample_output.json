@@ -29,18 +29,6 @@
 							"Completed",
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "status",
-						"dependencyConditions": [
-							"Completed"
-						]
-					},
-					{
-						"activity": "error_message",
-						"dependencyConditions": [
-							"Completed"
-						]
 					}
 				],
 				"policy": {
@@ -301,14 +289,7 @@
 			{
 				"name": "End_time",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Copy data",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -318,55 +299,6 @@
 					"variableName": "End_time",
 					"value": {
 						"value": "@formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm:ss')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "error_message",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Copy data",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "status",
-					"value": {
-						"value": "@{activity('Copy data').Error.message}",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "status",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Copy data",
-						"dependencyConditions": [
-							"Succeeded",
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "status",
-					"value": {
-						"value": "@{activity('Copy data').status}",
 						"type": "Expression"
 					}
 				}
