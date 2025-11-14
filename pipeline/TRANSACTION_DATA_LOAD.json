@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Dataflow",
+				"name": "transaction_data_flow",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
@@ -34,11 +34,11 @@
 				}
 			},
 			{
-				"name": "CopyDataActivity",
+				"name": "copy_transaction_csv",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Dataflow",
+						"activity": "transaction_data_flow",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -149,9 +149,20 @@
 									"type": "Decimal"
 								}
 							}
-						]
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
 					}
 				},
+				"inputs": [
+					{
+						"referenceName": "transaction_csv",
+						"type": "DatasetReference"
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "transaction",
@@ -181,7 +192,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "CopyDataActivity",
+						"activity": "copy_transaction_csv",
 						"dependencyConditions": [
 							"Succeeded"
 						]
