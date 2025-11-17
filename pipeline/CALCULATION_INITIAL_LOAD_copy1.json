@@ -220,7 +220,10 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_type_code_id IN (1, 2, 3)\n  AND t.transaction_date >= TO_TIMESTAMP('@{item().month_start}', 'YYYY-MM-DD HH24:MI:SS')\n  AND t.transaction_date < TO_TIMESTAMP('@{addMonths(item().month_start, 1)}', 'YYYY-MM-DD HH24:MI:SS')\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;\n"
+							"text": {
+								"value": "INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_type_code_id IN (1, 2, 3)\n  AND t.transaction_date >= @{pipeline().parameters.month_start}::timestamp\n  AND t.transaction_date < (@{pipeline().parameters.month_start}::timestamp + INTERVAL '1 month')\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;",
+								"type": "Expression"
+							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -262,11 +265,10 @@
 		],
 		"parameters": {
 			"month_start": {
-				"type": "array",
-				"defaultValue": "@item().month_start"
+				"type": "array"
 			},
 			"month_end": {
-				"type": "array"
+				"type": "string"
 			}
 		},
 		"annotations": []
