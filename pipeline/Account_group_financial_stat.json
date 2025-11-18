@@ -55,7 +55,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "INSERT INTO ch_fss.account_group_financial_stat (\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  sub.share_id,\n  4 AS financial_stat_type_code_id,\n  sub.transaction_date::date AS date,\n  sub.balance AS value\nFROM (\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\n    t.share_id,\n    t.transaction_date,\n    t.balance,\n    t.transaction_id\n  FROM ch_fss.\"transaction\" t\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\n) sub;"
+							"text": "INSERT INTO ch_fss.account_group_financial_stat (\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  sg.scoring_group_id,\n  4 AS financial_stat_type_code_id,      -- replace with the actual code as needed\n  t.transaction_date AS date,\n  t.balance AS value\nFROM ch_fss.scoring_group sg\nJOIN (\n    SELECT DISTINCT ON (share_id, transaction_date)\n        share_id,\n        transaction_date,\n        balance,\n        transaction_id\n    FROM ch_fss.transaction aa\n    ORDER BY share_id, transaction_date, transaction_id DESC\n) t ON sg.account_id = t.share_id\nWHERE sg.group_type_code_id = 1\n "
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
