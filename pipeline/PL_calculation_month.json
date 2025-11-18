@@ -24,7 +24,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzurePostgreSqlSource",
-						"query": "WITH bounds AS (\n  SELECT \n    date_trunc('month', MIN(transaction_date)) AS min_month,\n    date_trunc('month', MAX(transaction_date)) AS max_month\n  FROM ch_fss.\"transaction\"\n),\nmonths AS (\n  SELECT \n    generate_series(min_month, max_month, interval '1 month') AS month_start\n  FROM bounds\n)\nSELECT \n  to_char(month_start, 'YYYY-MM-DD HH24:MI:SS.MS') AS month_start,\n  to_char(month_start + INTERVAL '1 month' - INTERVAL '0.001 second', 'YYYY-MM-DD HH24:MI:SS.MS') AS month_end\nFROM months\nORDER BY month_start;",
+						"query": "WITH bounds AS (\n  SELECT \n    date_trunc('month', MIN(transaction_date)) AS min_month,\n    date_trunc('month', MAX(transaction_date)) AS max_month\n  FROM ch_fss.\"transaction\"\n),\nmonths AS (\n  SELECT \n    generate_series(min_month, max_month, interval '1 month') AS month_start\n  FROM bounds\n)\nSELECT \n  to_char(month_start, 'YYYY-MM-DD') AS month_start,\n  to_char(month_start + INTERVAL '1 month' - INTERVAL '0.001 second', 'YYYY-MM-DD') AS month_end\nFROM months\nORDER BY month_start;",
 						"partitionOption": "None",
 						"queryTimeout": "02:00:00"
 					},
@@ -69,8 +69,14 @@
 								},
 								"waitOnCompletion": true,
 								"parameters": {
-									"month_start": "@item().month_start",
-									"month_end": "@item().month_end"
+									"month_start": {
+										"value": "@item().month_start",
+										"type": "Expression"
+									},
+									"month_end": {
+										"value": "@item().month_end",
+										"type": "Expression"
+									}
 								}
 							}
 						}
