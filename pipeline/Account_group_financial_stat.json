@@ -1,0 +1,67 @@
+{
+	"name": "Account_group_financial_stat",
+	"properties": {
+		"activities": [
+			{
+				"name": "transaction_daily",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzurePostgreSql1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "INSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  s.scoring_group_id  ,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t , ch_fss.scoring_group s\nWHERE s.account_id  = t.share_id\n  and t.transaction_date >= '2020-01-01'::date\n  AND t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY s.scoring_group_id, t.transaction_date::date, t.transaction_type_code_id"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "ending_bal",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "transaction_daily",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzurePostgreSql1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "INSERT INTO ch_fss.account_group_financial_stat (\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  sub.share_id,\n  4 AS financial_stat_type_code_id,\n  sub.transaction_date::date AS date,\n  sub.balance AS value\nFROM (\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\n    t.share_id,\n    t.transaction_date,\n    t.balance,\n    t.transaction_id\n  FROM ch_fss.\"transaction\" t\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\n) sub;"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
