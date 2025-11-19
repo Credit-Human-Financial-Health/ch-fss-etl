@@ -159,7 +159,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "transaction_csv",
+						"referenceName": "1_transaction_csv",
 						"type": "DatasetReference"
 					}
 				],
