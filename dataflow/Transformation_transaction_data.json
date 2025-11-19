@@ -62,6 +62,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
+				"     limit: 2,",
 				"     ignoreNoFilesFound: false,",
 				"     partitionBy('hash', 1)) ~> source",
 				"source derive(transaction_code = case(\r",
