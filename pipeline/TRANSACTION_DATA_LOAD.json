@@ -71,7 +71,8 @@
 							{
 								"source": {
 									"name": "TranId",
-									"type": "String"
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "transaction_id",
@@ -82,10 +83,23 @@
 							{
 								"source": {
 									"name": "BALANCECHANGE",
-									"type": "String"
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "transaction_amount",
+									"type": "Decimal",
+									"physicalType": "numeric"
+								}
+							},
+							{
+								"source": {
+									"name": "NEWBALANCE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "balance",
 									"type": "Decimal",
 									"physicalType": "numeric"
 								}
@@ -104,19 +118,9 @@
 							},
 							{
 								"source": {
-									"name": "transaction_date",
-									"type": "String"
-								},
-								"sink": {
-									"name": "merchant",
-									"type": "String",
-									"physicalType": "character varying"
-								}
-							},
-							{
-								"source": {
 									"name": "SOURCECODE",
-									"type": "String"
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "payment_method",
@@ -126,8 +130,9 @@
 							},
 							{
 								"source": {
-									"name": "transaction_code",
-									"type": "String"
+									"name": "ACTIONCODE",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "transaction_type_code_id",
@@ -137,7 +142,7 @@
 							},
 							{
 								"source": {
-									"name": "SHARE_ID",
+									"name": "PWC_key",
 									"type": "String",
 									"physicalType": "String"
 								},
@@ -145,17 +150,6 @@
 									"name": "share_id",
 									"type": "Int64",
 									"physicalType": "bigint"
-								}
-							},
-							{
-								"source": {
-									"name": "NEWBALANCE",
-									"type": "String"
-								},
-								"sink": {
-									"name": "balance",
-									"type": "Decimal",
-									"physicalType": "numeric"
 								}
 							}
 						],
