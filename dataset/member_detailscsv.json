@@ -1,0 +1,28 @@
+{
+	"name": "member_detailscsv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "PWC_Extract_Name_2025_11_5 (1).csv",
+				"container": "incomingfiles"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "add_date|PWC_Key|ORDINAL|TYPE|SUBTYPE|MAILOVERRIDE|SSNOVERRIDE|SSNCERTIFICATION|SSNTYPE|EFFECTIVEDATE|EXPIRATIONDATE|FirstName|MiddleName|LastName|SUFFIX|EXTRAADDRESS|STREET|CITY|STATE|ZIPCODE|LASTFMDATE|CARRIERROUTE|ADDRESSTYPE|DEATHDATE|ECOACODE|COUNTRY|COUNTRYCODE|RECORDCHANGEDATE|MBRSTATUS|MBRSTATUSFMDATE|MBRCREATEDATE",
+				"type": "String"
+			}
+		]
+	}
+}
