@@ -13,7 +13,7 @@
 				"fileName": "PWC_Extract_Name_2025_11_5 (1).csv",
 				"container": "incomingfiles"
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "|",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
