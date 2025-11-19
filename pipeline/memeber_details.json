@@ -137,6 +137,7 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
+							"wildcardFileName": "memeber_details",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {

@@ -21,15 +21,11 @@
 					"name": "sink1"
 				}
 			],
-			"transformations": [
-				{
-					"name": "derivedColumn1"
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
 				"source(output(",
 				"          add_date as string,",
-				"          PWC_Key as short,",
+				"          PWC_Key as integer,",
 				"          ORDINAL as boolean,",
 				"          TYPE as short,",
 				"          SUBTYPE as boolean,",
@@ -56,27 +52,15 @@
 				"          COUNTRY as string,",
 				"          COUNTRYCODE as string,",
 				"          RECORDCHANGEDATE as string,",
-				"          MBRSTATUS as short,",
+				"          MBRSTATUS as string,",
 				"          MBRSTATUSFMDATE as string,",
-				"          MBRCREATEDATE as string",
+				"          MBRCREATEDATE as date",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     partitionBy('hash', 1)) ~> source",
-				"source derive(name = replace(FirstName, '\\u0000', ''),",
-				"          {last_name     } = replace(LastName, '\\u0000', '')\r",
-				",",
-				"          address = replace(STREET, '\\u0000', ''),",
-				"          city = replace(CITY, '\\u0000', ''),",
-				"          state = replace(STATE, '\\u0000', '')\r",
-				",",
-				"          zip_code = replace(ZIPCODE, '\\u0000', '')\r",
-				",",
-				"          status = toString(MBRSTATUS),",
-				"          start_date = toDate(trim(replace(MBRCREATEDATE, ' +00', '')), 'yyyy-MM-dd'),",
-				"          member_id = toInteger(PWC_Key, '[^0-9]', '')) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"source sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          {PWC_Key|Shr|Beg Balance|#Dep|Dep Amount|#With|With Amount|# Dep External Transfers|Dep External Transfers Bal|# With External Transfers|With External Transfers Bal|# Dep Internal Transfers|Dep Internal Transfers Bal|# With Internal Transfers|With Internal Transfers Bal|# NSF CP Fees|NSF CP Fees Amt|End Balance|Monthly Avg Balance|SType|Description|City|State|Zip|YMbr|Age|Orig Branch|Cur Branch|Aggr Daily End Bal|# of Days Open During Month} as string",

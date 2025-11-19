@@ -12,23 +12,36 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          TranId as string,",
-				"          CommentID as string,",
-				"          PARENTID as string,",
+				"          TranId as integer,",
+				"          CommentID as integer,",
+				"          PARENTID as integer,",
 				"          SEQUENCENUMBER as string,",
 				"          EFFECTIVEDATE as string,",
-				"          POSTDATE as string,",
-				"          POSTTIME as string,",
+				"          POSTDATE as date,",
+				"          POSTTIME as timestamp,",
 				"          Comment as string,",
-				"          PWC_Key as string",
+				"          PWC_Key as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1"
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive() ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
