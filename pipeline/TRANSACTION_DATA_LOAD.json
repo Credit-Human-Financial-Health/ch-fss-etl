@@ -5,14 +5,7 @@
 			{
 				"name": "transaction_data_flow",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "Asondate",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -69,10 +62,6 @@
 						"type": "AzurePostgreSqlSink",
 						"writeBatchSize": 1000000,
 						"writeBatchTimeout": "00:30:00",
-						"preCopyScript": {
-							"value": "update fss1.watermark_table\nSET date = CAST('@{variables('currentDateTime')}' AS TIMESTAMP),\n    lines_copied = @{variables('rowsCopied')}\nWHERE \"source_table\" = 'ch_transaction_1';",
-							"type": "Expression"
-						},
 						"writeMethod": "CopyCommand"
 					},
 					"enableStaging": false,
@@ -81,72 +70,98 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "transaction_date",
-									"type": "String"
+									"name": "TranId",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
-									"name": "transaction_date",
-									"type": "DateTime"
+									"name": "transaction_id",
+									"type": "Int32",
+									"physicalType": "integer"
 								}
 							},
 							{
 								"source": {
-									"name": "Transaction_amount",
-									"type": "String"
+									"name": "transaction_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "transaction_date",
+									"type": "DateTime",
+									"physicalType": "timestamp without time zone"
+								}
+							},
+							{
+								"source": {
+									"name": "transaction_amount",
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "transaction_amount",
-									"type": "Decimal"
-								}
-							},
-							{
-								"source": {
-									"name": "DESCRIPTION",
-									"type": "String"
-								},
-								"sink": {
-									"name": "description",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "SOURCECODE",
-									"type": "String"
-								},
-								"sink": {
-									"name": "payment_method",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "transaction_code",
-									"type": "String"
-								},
-								"sink": {
-									"name": "transaction_type_code_id",
-									"type": "Int32"
-								}
-							},
-							{
-								"source": {
-									"name": "PWC_Key",
-									"type": "String"
-								},
-								"sink": {
-									"name": "share_id",
-									"type": "Int64"
+									"type": "Decimal",
+									"physicalType": "numeric"
 								}
 							},
 							{
 								"source": {
 									"name": "NEWBALANCE",
-									"type": "String"
+									"type": "String",
+									"physicalType": "String"
 								},
 								"sink": {
 									"name": "balance",
-									"type": "Decimal"
+									"type": "Decimal",
+									"physicalType": "numeric"
+								}
+							},
+							{
+								"source": {
+									"name": "DESCRIPTION",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "description",
+									"type": "String",
+									"physicalType": "character varying"
+								}
+							},
+							{
+								"source": {
+									"name": "SOURCECODE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "payment_method",
+									"type": "String",
+									"physicalType": "character varying"
+								}
+							},
+							{
+								"source": {
+									"name": "ACTIONCODE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "transaction_type_code_id",
+									"type": "Int32",
+									"physicalType": "integer"
+								}
+							},
+							{
+								"source": {
+									"name": "PWC_key",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "share_id",
+									"type": "Int64",
+									"physicalType": "bigint"
 								}
 							}
 						],
@@ -169,63 +184,8 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "Asondate",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "currentDateTime",
-					"value": {
-						"value": "@formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm:ss')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "rowsCopied",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "copy_transaction_csv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "rowsCopied",
-					"value": {
-						"value": "@activity('copy_transaction_csv').output.rowscopied",
-						"type": "Expression"
-					}
-				}
 			}
 		],
-		"variables": {
-			"currentDateTime": {
-				"type": "String"
-			},
-			"rowsCopied": {
-				"type": "Integer"
-			},
-			"lastmodifiedreftime": {
-				"type": "String"
-			},
-			"latestfile": {
-				"type": "String"
-			}
-		},
 		"annotations": []
 	}
 }

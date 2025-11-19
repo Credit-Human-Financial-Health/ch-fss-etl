@@ -64,7 +64,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     partitionBy('hash', 1)) ~> source",
-				"source derive(PWC_Key = ERROR_FUNCTION('')) ~> derivedColumn1",
+				"source derive() ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
