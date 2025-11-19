@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "PWC_Trans_2025_10_31.csv",
+				"fileName": "transaction.csv",
 				"container": "incomingfiles"
 			},
 			"columnDelimiter": "|",

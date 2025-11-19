@@ -35,6 +35,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
@@ -69,17 +72,18 @@
 				"          Transaction_amt = toInteger(BALANCECHANGE),",
 				"          post_time = lpad(toString(POSTTIME), 4, '0'),",
 				"     partitionBy('hash', 1)) ~> CombineDateTime",
-				"derivedColumn1 filter(Transaction_amt != 0) ~> filter1",
+				"derivedColumn2 filter(Transaction_amt != 0) ~> filter1",
 				"CombineDateTime derive(transaction_amount = case(\r",
 				"  (Transaction_amt < 0 && toString(ACTIONCODE) == 'D'), 2,\r",
 				"  (Transaction_amt > 0 && toString(ACTIONCODE) == 'F'), 3,\r",
-				"  (Transaction_amt > 0 && toString(ACTIONCODE) == 'W'), 2 ,\r",
+				"  (Transaction_amt > 0 && toString(ACTIONCODE) == 'W'), 1 ,\r",
 				"  0\r",
 				"),",
 				"          transaction_date = concat(toString(POSTDATE, 'yyyy-MM-dd'), ' ',  \r",
 				"  substring(lpad(toString(post_time), 4, '0'), 0, 2),    ':', \r",
 				"     substring(lpad(toString(post_time), 4, '0'), 2, 2) ),",
 				"     partitionBy('hash', 1)) ~> derivedColumn1",
+				"derivedColumn1 derive(transaction_date = toTimestamp(transaction_date,'MM/DD/YYYY HH24MI')) ~> derivedColumn2",
 				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
