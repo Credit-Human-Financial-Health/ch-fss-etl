@@ -24,6 +24,9 @@
 			"transformations": [
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
@@ -74,8 +77,10 @@
 				"          zip_code = replace(ZIPCODE, '\\u0000', '')\r",
 				",",
 				"          status = toString(MBRSTATUS),",
-				"          start_date = toDate(trim(replace(MBRCREATEDATE, ' +00', '')), 'yyyy-MM-dd')) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"          start_date = toDate(trim(replace(MBRCREATEDATE, ' +00', '')), 'yyyy-MM-dd'),",
+				"          member_id = toInteger(PWC_Key, '[^0-9]', '')) ~> derivedColumn1",
+				"derivedColumn1 derive(first_name = iif(isNull(name) || length(trim(name)) == 0, 'Unknown', replace(name, '\\u0000', ''))) ~> derivedColumn2",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          member_id as integer,",
@@ -99,8 +104,8 @@
 				"     upsertable:false,",
 				"     format: 'table',",
 				"     mapColumn(",
-				"          member_id = PWC_Key,",
-				"          name,",
+				"          member_id,",
+				"          name = first_name,",
 				"          last_name = {last_name     },",
 				"          address,",
 				"          city = derivedColumn1@city,",
