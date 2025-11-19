@@ -71,8 +71,7 @@
 							{
 								"source": {
 									"name": "TranId",
-									"type": "String",
-									"physicalType": "String"
+									"type": "String"
 								},
 								"sink": {
 									"name": "transaction_id",
@@ -83,23 +82,10 @@
 							{
 								"source": {
 									"name": "BALANCECHANGE",
-									"type": "String",
-									"physicalType": "String"
+									"type": "String"
 								},
 								"sink": {
 									"name": "transaction_amount",
-									"type": "Decimal",
-									"physicalType": "numeric"
-								}
-							},
-							{
-								"source": {
-									"name": "NEWBALANCE",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "balance",
 									"type": "Decimal",
 									"physicalType": "numeric"
 								}
@@ -118,9 +104,19 @@
 							},
 							{
 								"source": {
-									"name": "SOURCECODE",
+									"name": "transaction_date",
+									"type": "String"
+								},
+								"sink": {
+									"name": "merchant",
 									"type": "String",
-									"physicalType": "String"
+									"physicalType": "character varying"
+								}
+							},
+							{
+								"source": {
+									"name": "SOURCECODE",
+									"type": "String"
 								},
 								"sink": {
 									"name": "payment_method",
@@ -131,8 +127,7 @@
 							{
 								"source": {
 									"name": "transaction_code",
-									"type": "String",
-									"physicalType": "String"
+									"type": "String"
 								},
 								"sink": {
 									"name": "transaction_type_code_id",
@@ -142,7 +137,7 @@
 							},
 							{
 								"source": {
-									"name": "PWC_key",
+									"name": "SHARE_ID",
 									"type": "String",
 									"physicalType": "String"
 								},
@@ -154,16 +149,13 @@
 							},
 							{
 								"source": {
-									"name": "transaction_date",
-									"type": "String",
-									"physicalType": "String"
+									"name": "NEWBALANCE",
+									"type": "String"
 								},
 								"sink": {
-									"name": "merchant",
-									"type": "String",
-									"physicalType": "character varying",
-									"scale": 0,
-									"precision": 0
+									"name": "balance",
+									"type": "Decimal",
+									"physicalType": "numeric"
 								}
 							}
 						],
