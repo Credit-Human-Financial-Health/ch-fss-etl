@@ -82,19 +82,7 @@
 							},
 							{
 								"source": {
-									"name": "transaction_date",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "transaction_date",
-									"type": "DateTime",
-									"physicalType": "timestamp without time zone"
-								}
-							},
-							{
-								"source": {
-									"name": "transaction_amount",
+									"name": "BALANCECHANGE",
 									"type": "String",
 									"physicalType": "String"
 								},
@@ -142,7 +130,7 @@
 							},
 							{
 								"source": {
-									"name": "ACTIONCODE",
+									"name": "transaction_code",
 									"type": "String",
 									"physicalType": "String"
 								},
@@ -162,6 +150,20 @@
 									"name": "share_id",
 									"type": "Int64",
 									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
+									"name": "transaction_date",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "merchant",
+									"type": "String",
+									"physicalType": "character varying",
+									"scale": 0,
+									"precision": 0
 								}
 							}
 						],
