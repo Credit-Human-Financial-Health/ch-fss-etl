@@ -31,7 +31,7 @@
 					"name": "CombineDateTime"
 				},
 				{
-					"name": "filter1"
+					"name": "filternulls"
 				}
 			],
 			"scriptLines": [
@@ -65,8 +65,8 @@
 				"),",
 				"          SHARE_ID = concat(PWC_key,PARENTID),",
 				"     partitionBy('hash', 1)) ~> CombineDateTime",
-				"CombineDateTime filter(BALANCECHANGE != 0) ~> filter1",
-				"filter1 sink(allowSchemaDrift: true,",
+				"CombineDateTime filter(BALANCECHANGE != 0) ~> filternulls",
+				"filternulls sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          transaction_id as integer,",
