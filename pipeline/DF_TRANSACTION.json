@@ -179,7 +179,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "transaction",
+						"referenceName": "transaction_sink",
 						"type": "DatasetReference"
 					}
 				]

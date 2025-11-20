@@ -1,5 +1,5 @@
 {
-	"name": "transaction",
+	"name": "transaction_sink",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzurePostgreSql1",

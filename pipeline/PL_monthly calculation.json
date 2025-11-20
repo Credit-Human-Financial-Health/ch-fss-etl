@@ -121,7 +121,7 @@
 									"queryTimeout": "02:00:00"
 								},
 								"dataset": {
-									"referenceName": "transaction",
+									"referenceName": "transaction_sink",
 									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
