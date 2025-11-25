@@ -3771,7 +3771,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"pipeline": {
-								"referenceName": "Account_group_financial_stat",
+								"referenceName": "Account_group_fin_stat",
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
@@ -3849,7 +3849,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzurePostgreSql1')]",
-				"[concat(variables('factoryId'), '/pipelines/Account_group_financial_stat')]"
+				"[concat(variables('factoryId'), '/pipelines/Account_group_fin_stat')]"
 			]
 		},
 		{
