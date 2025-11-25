@@ -5,11 +5,9 @@
 			{
 				"name": "transaction_daily",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Script1",
+						"activity": "transaction_table_",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -40,8 +38,6 @@
 			{
 				"name": "ending_bal",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "transaction_daily",
@@ -66,7 +62,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "WITH latest_transactions AS (\n  SELECT\n    t.share_id,\n    t.transaction_date::date AS txn_date,\n    t.balance\n  FROM (\n    SELECT\n      t.*,\n      ROW_NUMBER() OVER (PARTITION BY t.share_id, t.transaction_date::date ORDER BY t.transaction_id DESC) as rn\n    FROM ch_fss.\"transaction\" t\n  ) t\n  WHERE t.rn = 1\n),\ndaily_balances AS (\n  SELECT\n    sa.account_id,\n    lt.txn_date,\n    SUM(lt.balance) AS total_balance\n  FROM latest_transactions lt\n  JOIN ch_fss.share_account sa ON lt.share_id = sa.share_id\n  GROUP BY sa.account_id, lt.txn_date\n)\nINSERT INTO ch_fss.account_group_financial_stat (scoring_group_id, date, value,financial_stat_type_code_id )\nSELECT\n  sg.scoring_group_id,\n  db.txn_date AS date,\n  db.total_balance AS balance, \n  4\nFROM daily_balances db\nJOIN ch_fss.scoring_group sg ON sg.account_id = db.account_id;\n "
+							"text": "INSERT INTO  ch_fss.account_group_financial_stat(scoring_group_id, date, value,financial_stat_type_code_id,created_date, created_by)\nSELECT\n    sg.scoring_group_id,\n    agg.date,\n    agg.total_value,\n    4,\n    NOW() AS created_date,\n  'system' AS created_by\nFROM\n(\n    select sa.account_id, sfs.date, sum(sfs.value) as total_value\n    from ch_fss.share_financial_stat sfs\n    join ch_fss.share_account sa on sa.share_id = sfs.share_id\n    where sfs.financial_stat_type_code_id = 4\n    group by sa.account_id, sfs.date\n) agg\nJOIN  ch_fss.scoring_group sg ON sg.account_id = agg.account_id\n \n) agg\nJOIN  ch_fss.scoring_group sg ON sg.account_id = agg.account_id\n "
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -75,8 +71,6 @@
 			{
 				"name": "bal_staging",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "truncate_stg_bal",
@@ -110,8 +104,6 @@
 			{
 				"name": "missing_ending_bal",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "bal_staging",
@@ -145,8 +137,6 @@
 			{
 				"name": "avg_multiple_dates",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "missing_ending_bal",
@@ -180,8 +170,6 @@
 			{
 				"name": "slack_score_with_fee",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "avg_multiple_dates",
@@ -215,8 +203,6 @@
 			{
 				"name": "slack score without fee",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "slack_score_with_fee",
@@ -349,8 +335,6 @@
 			{
 				"name": "truncate_stg_bal",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ending_bal",
@@ -382,7 +366,7 @@
 				}
 			},
 			{
-				"name": "Script1",
+				"name": "transaction_table_",
 				"type": "Script",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
