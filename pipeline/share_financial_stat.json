@@ -151,7 +151,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Account_group_financial_stat",
+						"referenceName": "Account_group_fin_stat",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
