@@ -34,8 +34,6 @@
 			{
 				"name": "ending_bal_cal",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "transaction_daily",
@@ -72,8 +70,6 @@
 			{
 				"name": "avg_multiple_dates",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ending_bal_cal",
