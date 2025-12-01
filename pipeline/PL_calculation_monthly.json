@@ -186,7 +186,7 @@
 					}
 				},
 				"linkedServiceName": {
-					"referenceName": "YourPostgreSqlLinkedService",
+					"referenceName": "Azurepostgresql1",
 					"type": "LinkedServiceReference"
 				}
 			},
