@@ -2124,7 +2124,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/account_group_fin_stat_copy2')]",
+			"name": "[concat(parameters('factoryName'), '/account_group_fin_stat_table')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2156,7 +2156,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "INSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  s.scoring_group_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nJOIN ch_fss.share_account sa ON t.share_id = sa.share_id\nJOIN ch_fss.scoring_group s ON sa.account_id = s.account_id\nWHERE t.transaction_date >= '2020-01-01'::date\n  AND t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY s.scoring_group_id, date, financial_stat_type_code_id"
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  s.scoring_group_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nJOIN ch_fss.share_account sa ON t.share_id = sa.share_id\nJOIN ch_fss.scoring_group s ON sa.account_id = s.account_id\nWHERE t.transaction_date >= ''',\npipeline().parameters.start_date,\n'''\nAND t.transaction_date < ''',\npipeline().parameters.end_date,\n'''\nGROUP BY s.scoring_group_id, date, financial_stat_type_code_id;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2189,7 +2192,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "INSERT INTO  ch_fss.account_group_financial_stat(scoring_group_id, date, value,financial_stat_type_code_id,created_date, created_by)\nSELECT\n    sg.scoring_group_id,\n    agg.date,\n    agg.total_value,\n    4,\n    NOW() AS created_date,\n  'system' AS created_by\nFROM\n(\n    select sa.account_id, sfs.date, sum(sfs.value) as total_value\n    from ch_fss.share_financial_stat sfs\n    join ch_fss.share_account sa on sa.share_id = sfs.share_id\n    where sfs.financial_stat_type_code_id = 4\n    group by sa.account_id, sfs.date\n) agg\nJOIN  ch_fss.scoring_group sg ON sg.account_id = agg.account_id\n "
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.account_group_financial_stat(scoring_group_id, date, value, financial_stat_type_code_id, created_date, created_by)\nSELECT\n    sg.scoring_group_id,\n    agg.date,\n    agg.total_value,\n    4,\n    NOW() AS created_date,\n    ''system'' AS created_by\nFROM\n(\n    SELECT sa.account_id, sfs.date, SUM(sfs.value) AS total_value\n    FROM ch_fss.share_financial_stat sfs\n    JOIN ch_fss.share_account sa ON sa.share_id = sfs.share_id\n    WHERE sfs.\"date\" >= ''',\n    pipeline().parameters.start_date,\n    '''\n    AND sfs.\"date\" < ''',\n    pipeline().parameters.end_date,\n    '''\n    AND sfs.financial_stat_type_code_id = 4\n    GROUP BY sa.account_id, sfs.date\n) agg\nJOIN ch_fss.scoring_group sg ON sg.account_id = agg.account_id;'\n)\n ",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2222,7 +2228,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "INSERT INTO ch_fss.account_group_financial_stat\r\n(\r\n   scoring_group_id,\r\n    financial_stat_type_code_id,\r\n    date,\r\n    value\r\n)\r\nWITH date_series AS (\r\n    SELECT generate_series::date AS dt\r\n    FROM generate_series(\r\n        '2020-01-01'::date,\r\n        CURRENT_DATE - INTERVAL '1 day',\r\n        INTERVAL '1 day'\r\n    )\r\n),\r\navg_values AS (\r\n    SELECT\r\n        sfs.scoring_group_id,\r\n        sfs.financial_stat_type_code_id,\r\n        ds.dt AS date,\r\n        SUM(sfs.value)/30 AS avg_value\r\n    FROM ch_fss.account_group_financial_stat sfs \r\n    CROSS JOIN date_series ds\r\n    WHERE sfs.financial_stat_type_code_id IN (1, 2, 3, 4)\r\n      AND sfs.date BETWEEN ds.dt - INTERVAL '29 days' AND ds.dt  -- last 30 days including the day\r\n    GROUP BY sfs.scoring_group_id, sfs.financial_stat_type_code_id, ds.dt\r\n),\r\nmapped_avg AS (\r\n    SELECT\r\n        scoring_group_id,\r\n        CASE financial_stat_type_code_id\r\n            WHEN 1 THEN 5\r\n            WHEN 2 THEN 6\r\n            WHEN 3 THEN 7\r\n            WHEN 4 THEN 8\r\n        END AS financial_stat_type_code_id,\r\n        date,\r\n        avg_value\r\n    FROM avg_values\r\n)\r\nSELECT\r\n    scoring_group_id,\r\n    financial_stat_type_code_id,\r\n    date,\r\n    avg_value AS value\r\nFROM mapped_avg\r\nWHERE avg_value IS NOT NULL;\r\n"
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.account_group_financial_stat\n(\n   scoring_group_id,\n   financial_stat_type_code_id,\n   date,\n   value\n)\nWITH date_series AS (\n  SELECT generate_series::date AS dt\n  FROM generate_series(''',\npipeline().parameters.start_date,\n'''::date, ''',\npipeline().parameters.end_date,\n'''::date - interval ''1 day'', interval ''1 day'')\n),\navg_values AS (\n    SELECT\n        sfs.scoring_group_id,\n        sfs.financial_stat_type_code_id,\n        ds.dt AS date,\n        SUM(sfs.value)/30 AS avg_value\n    FROM ch_fss.account_group_financial_stat sfs \n    CROSS JOIN date_series ds\n    WHERE sfs.financial_stat_type_code_id IN (1, 2, 3, 4)\n      AND sfs.date BETWEEN ds.dt - INTERVAL ''29 days'' AND ds.dt  -- last 30 days including the day\n    GROUP BY sfs.scoring_group_id, sfs.financial_stat_type_code_id, ds.dt\n),\nmapped_avg AS (\n    SELECT\n        scoring_group_id,\n        CASE financial_stat_type_code_id\n            WHEN 1 THEN 5\n            WHEN 2 THEN 6\n            WHEN 3 THEN 7\n            WHEN 4 THEN 8\n        END AS financial_stat_type_code_id,\n        date,\n        avg_value\n    FROM avg_values\n)\nSELECT\n    scoring_group_id,\n    financial_stat_type_code_id,\n    date,\n    avg_value AS value\nFROM mapped_avg\nWHERE avg_value IS NOT NULL;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2255,7 +2264,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH denominators AS (\r\n  SELECT\r\n    scoring_group_id,\r\n    date,\r\n    SUM(abs(value)) AS denom_sum\r\n  FROM ch_fss.account_group_financial_stat sfs\r\n  WHERE financial_stat_type_code_id IN (6, 7)\r\n  GROUP BY scoring_group_id, date\r\n),\r\nnumerators AS (\r\n  SELECT\r\n    scoring_group_id,\r\n    date,\r\n    value::numeric AS numerator\r\n  FROM ch_fss.account_group_financial_stat sfs\r\n  WHERE financial_stat_type_code_id = 8\r\n),\r\nvals AS (\r\n  SELECT\r\n    n.scoring_group_id,\r\n    n.date,\r\n    n.numerator,\r\n    d.denom_sum,\r\n    CASE \r\n    WHEN d.denom_sum = 0 THEN NULL\r\n      ELSE n.numerator / d.denom_sum\r\n    END AS ratio\r\n  FROM numerators n\r\n  JOIN denominators d\r\n    ON n.scoring_group_id = d.scoring_group_id\r\n   AND n.date = d.date\r\n)\r\nINSERT INTO ch_fss.account_group_financial_stat (\r\n  scoring_group_id,\r\n  financial_stat_type_code_id,\r\n  date,\r\n  value\r\n)\r\nSELECT \r\n  scoring_group_id,\r\n  9,\r\n  date,\r\n  ratio\r\nFROM vals"
+									"text": {
+										"value": "@concat(\n'WITH denominators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n pipeline().parameters.start_date,\n  ''' \n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\nnumerators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id = 8\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat (\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  9,\n  date,\n  ratio\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2288,7 +2300,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH denominators AS (\n  SELECT\n  scoring_group_id,\n  date,\n  SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (6)\n  GROUP BY scoring_group_id, date\n),\nnumerators AS (\n  SELECT\n  scoring_group_id,\n  date,\n  SUM(value)::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (7,8)\n  GROUP BY scoring_group_id, date\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  10,\n  date,\n  ratio\nFROM vals"
+									"text": {
+										"value": "@concat(\n'WITH denominators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (6)\n  GROUP BY scoring_group_id, date\n),\nnumerators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(\n      CASE \n        WHEN financial_stat_type_code_id = 7 THEN abs(value)\n        WHEN financial_stat_type_code_id = 8 THEN value\n        ELSE 0 -- in case other codes appear\n      END\n    )::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (7, 8)\n  GROUP BY scoring_group_id, date\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  10,\n  date,\n  ratio\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2321,7 +2336,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH denominators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(value) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n\n),\nnumerators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id = 4\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  11,\n  date,\n  ratio\nFROM vals"
+									"text": {
+										"value": "@concat(\n'WITH denominators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\nnumerators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id = 4\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  11,\n  date,\n  ratio\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2354,7 +2372,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH expenses AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\ndeposits AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS income\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id = 6\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    d.income -  n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN deposits d\n    ON n.scoring_group_id = d.scoring_group_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  12,\n  date,\n  diff*30\nFROM vals"
+									"text": {
+										"value": "@concat(\n'WITH expenses AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\ndeposits AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS income\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id = 5\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    d.income - n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN deposits d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  12,\n  date,\n  diff*30\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2387,7 +2408,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH expenses AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\nbalances AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS balance\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id = 8\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    d.balance -  n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN balances d\n    ON n.scoring_group_id = d.scoring_group_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  13,\n  date,\n  diff*30\nFROM vals\n"
+									"text": {
+										"value": "@concat(\n'WITH expenses AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(ABS(value)) * 30 AS total_expense\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\npipeline().parameters.start_date,\n'''\n    AND sfs.\"date\" < ''',\npipeline().parameters.end_date,\n'''\n    AND financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\nbalances AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS balance\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\npipeline().parameters.start_date,\n'''\n    AND sfs.\"date\" < ''',\npipeline().parameters.end_date,\n'''\n    AND financial_stat_type_code_id = 8\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    d.balance - n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN balances d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  13,\n  date,\n  diff\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2448,7 +2472,10 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "TRUNCATE TABLE ch_fss.account_group_financial_stat CASCADE;"
+									"text": {
+										"value": "@concat(\r\n'DELETE FROM ch_fss.account_group_financial_stat\r\nWHERE date >= ''',\r\npipeline().parameters.start_date,\r\n''' \r\nAND date < ''',\r\npipeline().parameters.end_date,\r\n''';'\r\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2459,17 +2486,17 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"month_start": {
+					"start_date": {
 						"type": "string",
-						"defaultValue": "@item().month_start"
+						"defaultValue": "@item().start_date"
 					},
-					"month_end": {
+					"end_date": {
 						"type": "string",
-						"defaultValue": "@item().month_end"
+						"defaultValue": "@item().end_date"
 					}
 				},
 				"folder": {
-					"name": "Ch_environment"
+					"name": "batch_wise_cal"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-11-20T05:27:08Z"
@@ -2744,6 +2771,242 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-11-20T05:27:08Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzurePostgreSql1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/share_financial_stat_table')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "transaction_daily",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Truncate_table_financial_stat",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzurePostgreSql1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat('\nINSERT INTO fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_date::date >= ''',\n pipeline().parameters.start_date,\n '''::date\n  AND t.transaction_date::date <= ''',\n pipeline().parameters.end_date,\n '''::date\n  AND t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;\n')",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "ending_bal_cal",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "transaction_daily",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzurePostgreSql1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  sub.share_id,\n  4 AS financial_stat_type_code_id,\n  sub.transaction_date::date AS date,\n  sub.balance AS value\nFROM (\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\n    t.share_id,\n    t.transaction_date,\n    t.balance,\n    t.transaction_id\n  FROM ch_fss.\"transaction\" t\n  WHERE t.transaction_date >= ''',\n  pipeline().parameters.start_date,\n  ''' \n  and t.transaction_date  < ''',\n  pipeline().parameters.end_date,\n  '''\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\n) sub;'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "stg_ending_bal",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "truncate_stg_table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzurePostgreSql1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat(\n'WITH date_range AS (\n  SELECT generate_series::date AS dt\n  FROM generate_series(''',\n  pipeline().parameters.start_date,\n  '''::date, ''',\n  pipeline().parameters.end_date,\n  '''::date - interval ''1 day'', interval ''1 day'')\n),\ngroups AS (\n  SELECT DISTINCT share_id\n  FROM ch_fss.share_account sa\n  WHERE sa.close_date IS NULL\n),\nall_combinations AS (\n  SELECT g.share_id, d.dt AS date\n  FROM groups g CROSS JOIN date_range d\n)\nINSERT INTO fss_stg.stg_missing_share_ending_bal(\n  share_id, \n  date\n) \nSELECT ac.share_id, ac.date\nFROM all_combinations ac\nLEFT JOIN ch_fss.share_financial_stat agfs\n  ON agfs.share_id = ac.share_id\n  AND agfs.date = ac.date\n  AND agfs.financial_stat_type_code_id = 4\nWHERE agfs.financial_stat_id IS NULL;'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "Insert_missing_ending_bal",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "stg_ending_bal",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzurePostgreSql1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.share_financial_stat (\n  value,\n  date,\n  financial_stat_type_code_id,\n  share_id,\n  created_date,\n  created_by\n)\nSELECT\n  prev.value,\n  tm.date,\n  4,\n  tm.share_id,\n  NOW() AS created_date,\n  ''system'' AS created_by\nFROM fss_stg.stg_missing_share_ending_bal tm\nLEFT JOIN LATERAL (\n  SELECT value\n  FROM  ch_fss.share_financial_stat agfs\n  WHERE agfs.share_id = tm.share_id\n    AND agfs.financial_stat_type_code_id = 4\n    AND agfs.date < tm.date\n  ORDER BY date DESC\n  LIMIT 1\n) prev ON true\nAND prev.value IS NOT null;'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "truncate_stg_table",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "ending_bal_cal",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzurePostgreSql1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "TRUNCATE TABLE fss_stg.stg_missing_share_ending_bal CASCADE;"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "Truncate_table_financial_stat",
+						"type": "Script",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "AzurePostgreSql1",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat(\n'DELETE FROM ch_fss.share_financial_stat\nWHERE date >= ''',\npipeline().parameters.start_date,\n''' \nAND date < ''',\npipeline().parameters.end_date,\n''';'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"start_date": {
+						"type": "string",
+						"defaultValue": "@item.start_date"
+					},
+					"end_date": {
+						"type": "string",
+						"defaultValue": "@item.end_date"
+					}
+				},
+				"folder": {
+					"name": "batch_wise_cal"
 				},
 				"annotations": [],
 				"lastPublishTime": "2025-11-20T05:27:08Z"
@@ -4207,24 +4470,6 @@
 					"schema": "fss1",
 					"table": "share_group_financial_stat"
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzurePostgreSql1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SlackScoreViewDataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzurePostgreSql1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzurePostgreSqlTable",
-				"schema": [],
-				"typeProperties": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzurePostgreSql1')]"
