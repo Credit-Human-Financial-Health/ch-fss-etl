@@ -321,7 +321,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "TRUNCATE TABLE ch_fss.account_group_financial_stat agt CASCADE;"
+							"text": "TRUNCATE TABLE ch_fss.account_group_financial_stat CASCADE;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"

@@ -103,7 +103,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Execute Pipeline1",
+							"name": "share_financial_stat_table",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
@@ -133,7 +133,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Execute Pipeline1",
+									"activity": "account_group_fin_stat_table",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -149,6 +149,39 @@
 								"value": {
 									"value": "@item().month_end",
 									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "account_group_fin_stat_table",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "share_financial_stat_table",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "account_group_fin_stat_table",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"month_start": {
+										"value": "@item().month_start\r\n",
+										"type": "Expression"
+									},
+									"month_end": {
+										"value": "@item().month_end",
+										"type": "Expression"
+									}
 								}
 							}
 						}

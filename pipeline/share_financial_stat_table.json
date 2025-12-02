@@ -135,29 +135,6 @@
 				}
 			},
 			{
-				"name": "account_group_fin_stat_table",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Insert_missing_ending_bal",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "account_group_fin_stat_table",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
 				"name": "truncate_stg_table",
 				"type": "Script",
 				"dependsOn": [
