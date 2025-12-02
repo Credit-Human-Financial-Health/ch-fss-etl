@@ -29,7 +29,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;\n"
+							"text": "@concat('\nINSERT INTO fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_date::date >= ''',\n pipeline().parameters.month_start,\n '''::date\n  AND t.transaction_date::date <= ''',\n pipeline().parameters.month_end,\n '''::date\n  AND t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;\n')\n"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -62,7 +62,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "INSERT INTO ch_fss.share_financial_stat (\r\n  share_id,\r\n  financial_stat_type_code_id,\r\n  date,\r\n  value\r\n)\r\nSELECT\r\n  sub.share_id,\r\n  4 AS financial_stat_type_code_id,\r\n  sub.transaction_date::date AS date,\r\n  sub.balance AS value\r\nFROM (\r\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\r\n    t.share_id,\r\n    t.transaction_date,\r\n    t.balance,\r\n    t.transaction_id\r\n  FROM ch_fss.\"transaction\" t\r\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\r\n) sub;"
+							"text": "@concat(\r\n'INSERT INTO ch_fss.share_financial_stat (\r\n  share_id,\r\n  financial_stat_type_code_id,\r\n  date,\r\n  value\r\n)\r\nSELECT\r\n  sub.share_id,\r\n  4 AS financial_stat_type_code_id,\r\n  sub.transaction_date::date AS date,\r\n  sub.balance AS value\r\nFROM (\r\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\r\n    t.share_id,\r\n    t.transaction_date,\r\n    t.balance,\r\n    t.transaction_id\r\n  FROM ch_fss.\"transaction\" t\r\n  WHERE t.transaction_date >= ''',\r\n  pipeline().parameters.month_start,\r\n  ''' \r\n  and t.transaction_date  < ''',\r\n  pipeline().parameters.month_end,\r\n  '''\r\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\r\n) sub;'\r\n)"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -95,7 +95,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "WITH date_range AS (\n  SELECT generate_series::date AS dt\n  FROM generate_series('2020-01-01'::date, '2025-10-31'::date, interval '1 day')\n),\ngroups AS (\n  SELECT DISTINCT share_id\n  FROM ch_fss.share_financial_stat\n),\nall_combinations AS (\n  SELECT g.share_id, d.dt AS date\n  FROM groups g CROSS JOIN date_range d\n)\ninsert into fss_stg.stg_missing_share_ending_bal(\nshare_id, \ndate) \nSELECT ac.share_id, ac.date\nFROM all_combinations ac\nLEFT JOIN ch_fss.share_financial_stat agfs\n  ON agfs.share_id = ac.share_id\n  AND agfs.date = ac.date\n  AND agfs.financial_stat_type_code_id = 4\nWHERE agfs.financial_stat_id IS NULL;"
+							"text": "@concat(\n'WITH date_range AS (\n  SELECT generate_series::date AS dt\n  FROM generate_series(''',\n  pipeline().parameters.month_start,\n  '''::date, ''',\n  pipeline().parameters.month_end,\n  '''::date - interval ''1 day'', interval ''1 day'')\n),\ngroups AS (\n  SELECT DISTINCT share_id\n  FROM ch_fss.share_account sa\n  WHERE sa.close_date IS NULL\n),\nall_combinations AS (\n  SELECT g.share_id, d.dt AS date\n  FROM groups g CROSS JOIN date_range d\n)\nINSERT INTO fss_stg.stg_missing_share_ending_bal(\n  share_id, \n  date\n) \nSELECT ac.share_id, ac.date\nFROM all_combinations ac\nLEFT JOIN ch_fss.share_financial_stat agfs\n  ON agfs.share_id = ac.share_id\n  AND agfs.date = ac.date\n  AND agfs.financial_stat_type_code_id = 4\nWHERE agfs.financial_stat_id IS NULL;'\n)"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -128,14 +128,14 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "INSERT INTO ch_fss.share_financial_stat (\n  value,\n  date,\n  financial_stat_type_code_id,\n  share_id,\n  created_date,\n  created_by\n)\nSELECT\n  prev.value,\n  tm.date,\n  4,\n  tm.share_id,\n  NOW() AS created_date,\n  'system' AS created_by\nFROM fss_stg.stg_missing_share_ending_bal tm\nLEFT JOIN LATERAL (\n  SELECT value\n  FROM  ch_fss.share_financial_stat agfs\n  WHERE agfs.share_id = tm.share_id\n    AND agfs.financial_stat_type_code_id = 4\n    AND agfs.date < tm.date\n  ORDER BY date DESC\n  LIMIT 1\n) prev ON true\nand prev.value IS NOT null"
+							"text": "@concat(\n'INSERT INTO ch_fss.share_financial_stat (\n  value,\n  date,\n  financial_stat_type_code_id,\n  share_id,\n  created_date,\n  created_by\n)\nSELECT\n  prev.value,\n  tm.date,\n  4,\n  tm.share_id,\n  NOW() AS created_date,\n  ''system'' AS created_by\nFROM fss_stg.stg_missing_share_ending_bal tm\nLEFT JOIN LATERAL (\n  SELECT value\n  FROM  ch_fss.share_financial_stat agfs\n  WHERE agfs.share_id = tm.share_id\n    AND agfs.financial_stat_type_code_id = 4\n    AND agfs.date < tm.date\n  ORDER BY date DESC\n  LIMIT 1\n) prev ON true\nAND prev.value IS NOT null;'\n)"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			},
 			{
-				"name": "account_group_fin_stat",
+				"name": "account_group_fin_stat_table",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -151,7 +151,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "account_group_fin_stat",
+						"referenceName": "account_group_fin_stat_table",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -210,22 +210,21 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": {
-								"value": "@DELETE FROM ch_fss.share_financial_stat\nWHERE date >= variables('Start_time')\n  AND date < variables('End_time');",
-								"type": "Expression"
-							}
+							"text": "TRUNCATE TABLE ch_fss.share_financial_stat CASCADE;\n"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
 		],
-		"variables": {
-			"Start_time": {
-				"type": "String"
+		"parameters": {
+			"month_start": {
+				"type": "string",
+				"defaultValue": "@item.month_start"
 			},
-			"End_time": {
-				"type": "String"
+			"month_end": {
+				"type": "string",
+				"defaultValue": "@item.month_end"
 			}
 		},
 		"folder": {
