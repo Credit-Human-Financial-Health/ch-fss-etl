@@ -328,6 +328,16 @@
 				}
 			}
 		],
+		"parameters": {
+			"month_start": {
+				"type": "string",
+				"defaultValue": "@item().month_start"
+			},
+			"month_end": {
+				"type": "string",
+				"defaultValue": "@item().month_end"
+			}
+		},
 		"folder": {
 			"name": "Ch_environment"
 		},
