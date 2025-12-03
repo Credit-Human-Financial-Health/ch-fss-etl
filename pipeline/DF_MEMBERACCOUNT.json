@@ -27,6 +27,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "data_flow_pipelines"
+		},
 		"annotations": [],
 		"lastPublishTime": "2025-11-08T19:05:37Z"
 	},
