@@ -1,8 +1,8 @@
 {
-	"name": "DF_transaction_data",
+	"name": "DF_TRANSACTION",
 	"properties": {
 		"folder": {
-			"name": "DATA TRANSFORMATION FLOWS"
+			"name": "DATA TRANSFORMATION"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {

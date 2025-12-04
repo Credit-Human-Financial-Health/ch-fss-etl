@@ -1,8 +1,8 @@
 {
-	"name": "DF_share_account",
+	"name": "DF_SHAREACCOUNT",
 	"properties": {
 		"folder": {
-			"name": "DATA TRANSFORMATION FLOWS"
+			"name": "DATA TRANSFORMATION"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {

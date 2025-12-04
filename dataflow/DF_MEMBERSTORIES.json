@@ -2,7 +2,7 @@
 	"name": "DF_MEMBERSTORIES",
 	"properties": {
 		"folder": {
-			"name": "DATA TRANSFORMATION FLOWS"
+			"name": "DATA TRANSFORMATION"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
