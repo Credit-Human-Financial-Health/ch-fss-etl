@@ -113,6 +113,8 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "comments",
@@ -153,53 +155,16 @@
 						"type": "TabularTranslator",
 						"mappings": [
 							{
+								"source": {
+									"name": "comment_id"
+								},
 								"sink": {
 									"name": "comment_id",
-									"type": "Int64"
+									"type": "Int64",
+									"physicalType": "bigint"
 								}
 							},
-							{
-								"sink": {
-									"name": "post_date",
-									"type": "DateTime"
-								}
-							},
-							{
-								"sink": {
-									"name": "comment_value",
-									"type": "String"
-								}
-							},
-							{
-								"sink": {
-									"name": "created_date",
-									"type": "DateTime"
-								}
-							},
-							{
-								"sink": {
-									"name": "created_by",
-									"type": "String"
-								}
-							},
-							{
-								"sink": {
-									"name": "updated_date",
-									"type": "DateTime"
-								}
-							},
-							{
-								"sink": {
-									"name": "updated_by",
-									"type": "String"
-								}
-							},
-							{
-								"sink": {
-									"name": "transaction_id",
-									"type": "Int32"
-								}
-							}
+							null
 						],
 						"typeConversion": true,
 						"typeConversionSettings": {
