@@ -133,7 +133,7 @@
 			}
 		},
 		"folder": {
-			"name": "data_flow_pipelines"
+			"name": "DATA_LOAD_PIPELINES"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-11-19T21:46:21Z"

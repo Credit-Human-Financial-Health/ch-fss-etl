@@ -137,7 +137,10 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "@concat(\n'INSERT INTO ch_fss.share_financial_stat (\n  value,\n  date,\n  financial_stat_type_code_id,\n  share_id,\n  created_date,\n  created_by\n)\nSELECT\n  prev.value,\n  tm.date,\n  4,\n  tm.share_id,\n  NOW() AS created_date,\n  ''system'' AS created_by\nFROM fss_stg.stg_missing_share_ending_bal tm\nLEFT JOIN LATERAL (\n  SELECT value\n  FROM  ch_fss.share_financial_stat agfs\n  WHERE agfs.share_id = tm.share_id\n    AND agfs.financial_stat_type_code_id = 4\n    AND agfs.date < tm.date\n  ORDER BY date DESC\n  LIMIT 1\n) prev ON true\nAND prev.value IS NOT null;'\n)"
+							"text": {
+								"value": "@concat(\n'INSERT INTO ch_fss.share_financial_stat (\n  value,\n  date,\n  financial_stat_type_code_id,\n  share_id,\n  created_date,\n  created_by\n)\nSELECT\n  prev.value,\n  tm.date,\n  4,\n  tm.share_id,\n  NOW() AS created_date,\n  ''system'' AS created_by\nFROM fss_stg.stg_missing_share_ending_bal tm\nLEFT JOIN LATERAL (\n  SELECT value\n  FROM  ch_fss.share_financial_stat agfs\n  WHERE agfs.share_id = tm.share_id\n    AND agfs.financial_stat_type_code_id = 4\n    AND agfs.date < tm.date\n  ORDER BY date DESC\n  LIMIT 1\n) prev ON true\nAND prev.value IS NOT null;'\n)",
+								"type": "Expression"
+							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -217,7 +220,7 @@
 			}
 		},
 		"folder": {
-			"name": "batch_wise_cal"
+			"name": "CALCULATION_PIPELINES"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-11-20T05:27:08Z"

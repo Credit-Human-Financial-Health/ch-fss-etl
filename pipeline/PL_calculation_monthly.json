@@ -229,7 +229,7 @@
 			}
 		},
 		"folder": {
-			"name": "batch_wise_cal"
+			"name": "CALCULATION_PIPELINES"
 		},
 		"annotations": []
 	},

@@ -28,7 +28,7 @@
 			}
 		],
 		"folder": {
-			"name": "data_flow_pipelines"
+			"name": "DATA_LOAD_PIPELINES"
 		},
 		"annotations": []
 	}

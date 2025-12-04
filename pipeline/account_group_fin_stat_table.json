@@ -345,7 +345,10 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "@concat(\r\n'DELETE FROM ch_fss.account_group_financial_stat\r\nWHERE date >= ''',\r\npipeline().parameters.start_date,\r\n''' \r\nAND date < ''',\r\npipeline().parameters.end_date,\r\n''';'\r\n)"
+							"text": {
+								"value": "@concat(\r\n'DELETE FROM ch_fss.account_group_financial_stat\r\nWHERE date >= ''',\r\npipeline().parameters.start_date,\r\n''' \r\nAND date < ''',\r\npipeline().parameters.end_date,\r\n''';'\r\n)",
+								"type": "Expression"
+							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -363,7 +366,7 @@
 			}
 		},
 		"folder": {
-			"name": "batch_wise_cal"
+			"name": "CALCULATION_PIPELINES"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-11-20T05:27:08Z"
