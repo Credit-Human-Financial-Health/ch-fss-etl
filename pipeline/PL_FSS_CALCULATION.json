@@ -1,5 +1,5 @@
 {
-	"name": "PL_calculation_monthly",
+	"name": "PL_FSS_CALCULATION",
 	"properties": {
 		"activities": [
 			{
@@ -48,7 +48,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "share_financial_stat_table",
+									"referenceName": "PL_SHARE_FIN_STAT",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -105,7 +105,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "account_group_fin_stat_table",
+									"referenceName": "PL_ACCOUNT_GRP_FIN_STAT",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -229,7 +229,7 @@
 			}
 		},
 		"folder": {
-			"name": "CALCULATION_PIPELINES"
+			"name": "FSS_CALCULATION_PL"
 		},
 		"annotations": []
 	},

@@ -7,7 +7,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "start_time_copy1",
+						"activity": "start_time",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -34,7 +34,7 @@
 				}
 			},
 			{
-				"name": "start_time_copy1",
+				"name": "start_time",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"policy": {
@@ -51,7 +51,7 @@
 				}
 			},
 			{
-				"name": "end_time_copy1",
+				"name": "end_time",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
@@ -76,7 +76,7 @@
 				}
 			},
 			{
-				"name": "job_run_status_copy1",
+				"name": "job_run_status",
 				"type": "Script",
 				"dependsOn": [
 					{
@@ -86,7 +86,7 @@
 						]
 					},
 					{
-						"activity": "end_time_copy1",
+						"activity": "end_time",
 						"dependencyConditions": [
 							"Succeeded",
 							"Failed"
@@ -120,7 +120,7 @@
 			}
 		],
 		"folder": {
-			"name": "DATA_LOAD_PIPELINES"
+			"name": "FSS_DATALOAD_PL"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-11-08T19:05:37Z"

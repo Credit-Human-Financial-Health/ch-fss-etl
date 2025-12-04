@@ -2,7 +2,7 @@
 	"name": "DF_TRANSACTION",
 	"properties": {
 		"folder": {
-			"name": "DATA TRANSFORMATION"
+			"name": "FSS_DATAFLOW"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {

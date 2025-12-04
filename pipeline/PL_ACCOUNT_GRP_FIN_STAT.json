@@ -1,5 +1,5 @@
 {
-	"name": "account_group_fin_stat_table",
+	"name": "PL_ACCOUNT_GRP_FIN_STAT",
 	"properties": {
 		"activities": [
 			{
@@ -366,7 +366,7 @@
 			}
 		},
 		"folder": {
-			"name": "CALCULATION_PIPELINES"
+			"name": "FSS_CALCULATION_PL"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-11-20T05:27:08Z"

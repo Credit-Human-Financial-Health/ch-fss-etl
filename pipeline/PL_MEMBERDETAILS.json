@@ -28,7 +28,7 @@
 			}
 		],
 		"folder": {
-			"name": "DATA_LOAD_PIPELINES"
+			"name": "FSS_DATALOAD_PL"
 		},
 		"annotations": []
 	}
