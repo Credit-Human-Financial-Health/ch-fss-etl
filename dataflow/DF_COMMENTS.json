@@ -9,7 +9,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Trans_comments",
+						"referenceName": "trans_comments_csv",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -18,18 +18,19 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "comments_sink",
+						"referenceName": "comments_csv",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
 				{
 					"name": "derivedColumn1"
-				},
-				{
-					"name": "surrogateKey"
 				}
 			],
 			"scriptLines": [
@@ -47,38 +48,14 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 derive(comment_id = concat(TranId, CommentID),",
-				"          transaction_id = PARENTID) ~> derivedColumn1",
-				"derivedColumn1 keyGenerate(output(transaction_id as long),",
-				"     startAt: 1L,",
-				"     stepValue: 1L,",
-				"     partitionBy('hash', 1)) ~> surrogateKey",
-				"surrogateKey sink(allowSchemaDrift: true,",
+				"source1 derive(comment_id = concat(TranId, CommentID)) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          comment_id as long,",
-				"          post_date as timestamp,",
-				"          comment_value as string,",
-				"          created_date as timestamp,",
-				"          created_by as string,",
-				"          updated_date as timestamp,",
-				"          updated_by as string,",
-				"          transaction_id as integer",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
+				"     partitionFileNames:['comments_csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     mapColumn(",
-				"          comment_id,",
-				"          post_date = POSTDATE,",
-				"          comment_value = Comment,",
-				"          transaction_id",
-				"     ),",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     partitionBy('hash', 1),",
+				"     format: 'table') ~> sink1"
 			]
 		}
 	}

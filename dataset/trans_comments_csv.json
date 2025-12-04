@@ -1,5 +1,5 @@
 {
-	"name": "Trans_comments",
+	"name": "trans_comments_csv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
