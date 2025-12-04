@@ -135,6 +135,7 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
+							"wildcardFileName": "comments_csv",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
