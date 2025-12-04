@@ -13,8 +13,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "PWC_Extract_SavingsTransaction_2025_10_24.csv",
-				"container": "incomingfiles"
+				"fileName": "transaction.csv",
+				"container": "archive"
 			},
 			"columnDelimiter": "|",
 			"escapeChar": "\\",
