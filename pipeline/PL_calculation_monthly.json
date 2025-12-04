@@ -108,7 +108,17 @@
 									"referenceName": "account_group_fin_stat_table",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true
+								"waitOnCompletion": true,
+								"parameters": {
+									"start_date": {
+										"value": "@item().start_date",
+										"type": "Expression"
+									},
+									"end_date": {
+										"value": "@item().end_date",
+										"type": "Expression"
+									}
+								}
 							}
 						},
 						{
@@ -139,7 +149,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "INSERT INTO ch_fss.watermark_table (process_name, last_processed_date, updated_date, updated_by)\nVALUES (\n    'TransactionProcessing',\n    TO_TIMESTAMP('@{variables('LatestProcessedEndDate')}', 'YYYY-MM-DD') + INTERVAL '1 day',\n    NOW(),\n    'Admin'\n);",
+											"value": "INSERT INTO ch_fss.watermark_table (process_name, last_processed_date,created_by,created_date, updated_date, updated_by)\nVALUES (\n    'TransactionProcessing',\n    TO_TIMESTAMP('@{variables('LatestProcessedEndDate')}', 'YYYY-MM-DD') + INTERVAL '1 day',\n    'Admin',\n    NOW(),\n    NOW(),\n    'Admin'\n);",
 											"type": "Expression"
 										}
 									}
@@ -201,7 +211,7 @@
 						"queryTimeout": "02:00:00"
 					},
 					"dataset": {
-						"referenceName": "AzurePostgreSqlTable1",
+						"referenceName": "Lookupmonthsarray",
 						"type": "DatasetReference"
 					}
 				}

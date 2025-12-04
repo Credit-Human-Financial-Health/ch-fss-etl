@@ -1,12 +1,12 @@
 {
-	"name": "AzurePostgreSqlTable1",
+	"name": "Lookupmonthsarray",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzurePostgreSql1",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "DS_PWC"
+			"name": "DS_BATCHWISECAL"
 		},
 		"annotations": [],
 		"type": "AzurePostgreSqlTable",
