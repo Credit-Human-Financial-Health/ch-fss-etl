@@ -1,9 +1,9 @@
 {
-	"name": "TRANSACTION_DATA_LOAD",
+	"name": "PL_TRANSACTION_DATA",
 	"properties": {
 		"activities": [
 			{
-				"name": "transaction_data_flow",
+				"name": "DF_TRANSACTION_DATA",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
