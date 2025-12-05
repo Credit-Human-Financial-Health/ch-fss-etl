@@ -25,6 +25,39 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "transaction_table",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "DF_TRANSACTION_DATA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "AzurePostgreSql1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "UPDATE ch_fss.\"transaction\" t\nSET transaction_type_code_id = CASE\n    WHEN t.transaction_amount < 0 AND t.payment_method = 'F' THEN 3\n    WHEN t.transaction_amount < 0 THEN 2\n    WHEN t.transaction_amount > 0 THEN 1\n    ELSE transaction_type_code_id  -- keep existing if none match\nEND;\n"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
 			}
 		],
 		"folder": {
