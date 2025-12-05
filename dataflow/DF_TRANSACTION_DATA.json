@@ -1,8 +1,8 @@
 {
-	"name": "Transformation_transaction_data",
+	"name": "DF_TRANSACTION_DATA",
 	"properties": {
 		"folder": {
-			"name": "INTIAL LOAD"
+			"name": "FSS_DATAFLOW"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {

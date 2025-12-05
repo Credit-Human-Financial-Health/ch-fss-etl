@@ -55,7 +55,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "comment_data",
+						"activity": "comments",
 						"dependencyConditions": [
 							"Succeeded",
 							"Failed"
@@ -87,7 +87,7 @@
 						]
 					},
 					{
-						"activity": "comment_data",
+						"activity": "comments",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -110,7 +110,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "insert into ch_fss.job_run_status\n(pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time,status,error_message)\nvalues (\n  '@{pipeline().Pipeline}',\n  '@{pipeline().RunId}',\n  '@{formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss')}',\n  '@{pipeline().TriggerType}',\n  '@{variables('end_time')}',\n  '@{variables('start_time')}',\n  '@{activity('comment_data').status}',\n  '@{if(equals(activity('comment_data').status, 'Failed'), activity('comment_data').Message, null)}'\n)",
+								"value": "insert into ch_fss.job_run_status\n(pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time,status,error_message)\nvalues (\n  '@{pipeline().Pipeline}',\n  '@{pipeline().RunId}',\n  '@{formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss')}',\n  '@{pipeline().TriggerType}',\n  '@{variables('end_time')}',\n  '@{variables('start_time')}',\n  '@{activity('comments').status}',\n  '@{if(equals(activity('comments').status, 'Failed'), activity('comments').Error, null)}'\n)",
 								"type": "Expression"
 							}
 						}
@@ -121,14 +121,9 @@
 			{
 				"name": "comment_data",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "comments",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -240,7 +235,7 @@
 			"status": {
 				"type": "String"
 			},
-			"error_message": {
+			"ERROR": {
 				"type": "String"
 			}
 		},

@@ -18,7 +18,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "comments_csv",
+						"referenceName": "comments_sink",
 						"type": "DatasetReference"
 					},
 					"name": "sinkfile"
@@ -53,9 +53,29 @@
 				")) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['comments_csv'],",
+				"     input(",
+				"          comment_id as long,",
+				"          post_date as timestamp,",
+				"          comment_value as string,",
+				"          created_date as timestamp,",
+				"          created_by as string,",
+				"          updated_date as timestamp,",
+				"          updated_by as string,",
+				"          transaction_id as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          comment_id,",
+				"          post_date = transction_date,",
+				"          comment_value = Comment,",
+				"          transaction_id = TranId",
+				"     ),",
 				"     partitionBy('hash', 1)) ~> sinkfile"
 			]
 		}
