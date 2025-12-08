@@ -35,7 +35,7 @@
 			],
 			"scriptLines": [
 				"source(output(",
-				"          PWC_Key as string,",
+				"          PWC_Key as integer,",
 				"          ORDINAL as string,",
 				"          TYPE as string,",
 				"          SUBTYPE as string,",
@@ -118,7 +118,7 @@
 				"          MEMBERNUMBER as string,",
 				"          MBRSTATUS as string,",
 				"          MBRSTATUSFMDATE as string,",
-				"          MBRCREATEDATE as string,",
+				"          MBRCREATEDATE as date,",
 				"          MBRFMLASTDATE as string,",
 				"          MBREXPDATE as string,",
 				"          MBRACTIVITYDATE as string,",
