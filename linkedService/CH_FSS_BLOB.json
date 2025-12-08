@@ -10,7 +10,7 @@
 					"referenceName": "AzureKeyVault1",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "service-endpoint"
+				"secretName": "FSS-BLOB-ENDPOINT"
 			},
 			"accountKind": "StorageV2"
 		},
