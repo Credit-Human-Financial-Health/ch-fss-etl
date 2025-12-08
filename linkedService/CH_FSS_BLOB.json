@@ -1,8 +1,8 @@
 {
 	"name": "CH_FSS_BLOB",
 	"properties": {
-		"annotations": [],
 		"type": "AzureBlobStorage",
+		"annotations": [],
 		"typeProperties": {
 			"serviceEndpoint": {
 				"type": "AzureKeyVaultSecret",
@@ -18,6 +18,5 @@
 			"referenceName": "AutoResolveIntegrationRuntime",
 			"type": "IntegrationRuntimeReference"
 		}
-	},
-	"type": "Microsoft.DataFactory/factories/linkedservices"
+	}
 }
