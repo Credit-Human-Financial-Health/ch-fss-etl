@@ -12,7 +12,7 @@
 						"referenceName": "member_details_csv",
 						"type": "DatasetReference"
 					},
-					"name": "source"
+					"name": "MEMBERDETAILSSOURCE"
 				}
 			],
 			"sinks": [
@@ -21,7 +21,7 @@
 						"referenceName": "member_details_sink",
 						"type": "DatasetReference"
 					},
-					"name": "sink",
+					"name": "MEMBERDETAILSTABLE",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureBlobStorage1",
 						"type": "LinkedServiceReference"
@@ -30,7 +30,7 @@
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "COLUMNSDERIVED"
 				}
 			],
 			"scriptLines": [
@@ -70,11 +70,11 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     partitionBy('hash', 1)) ~> source",
-				"source derive(name = replace(FirstName, char(0), ''),",
+				"     partitionBy('hash', 1)) ~> MEMBERDETAILSSOURCE",
+				"MEMBERDETAILSSOURCE derive(name = replace(FirstName, char(0), ''),",
 				"          {e-mail} = LastName,",
-				"          state = substring(rtrim(STATE), 1, 2)) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"          state = substring(rtrim(STATE), 1, 2)) ~> COLUMNSDERIVED",
+				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          member_id as integer,",
@@ -105,11 +105,11 @@
 				"          last_name = LastName,",
 				"          address = STREET,",
 				"          city = CITY,",
-				"          state = derivedColumn1@state,",
+				"          state = COLUMNSDERIVED@state,",
 				"          zip_code = ZIPCODE,",
 				"          start_date = MBRCREATEDATE,",
 				"          email = {e-mail}",
-				"     )) ~> sink"
+				"     )) ~> MEMBERDETAILSTABLE"
 			]
 		}
 	}

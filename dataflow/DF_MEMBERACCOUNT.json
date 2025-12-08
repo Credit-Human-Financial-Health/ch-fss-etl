@@ -12,7 +12,7 @@
 						"referenceName": "member_accountcsv",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "SOURCEMEMBER"
 				}
 			],
 			"sinks": [
@@ -21,12 +21,12 @@
 						"referenceName": "member_account",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "MEMBERTABLE"
 				}
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "COLUMNSDERIVED"
 				}
 			],
 			"scriptLines": [
@@ -195,9 +195,9 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 derive(product_id = iifNull(TYPE,'p')) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     ignoreNoFilesFound: false) ~> SOURCEMEMBER",
+				"SOURCEMEMBER derive(product_id = iifNull(TYPE,'p')) ~> COLUMNSDERIVED",
+				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          account_id as integer,",
@@ -229,7 +229,7 @@
 				"          branch = BRANCH,",
 				"          product_id",
 				"     ),",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     partitionBy('hash', 1)) ~> MEMBERTABLE"
 			]
 		}
 	}

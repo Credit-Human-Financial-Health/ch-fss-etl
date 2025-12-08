@@ -12,7 +12,7 @@
 						"referenceName": "trans_comments_csv",
 						"type": "DatasetReference"
 					},
-					"name": "sourcecomments"
+					"name": "SOURCECOMMENTS"
 				}
 			],
 			"sinks": [
@@ -21,12 +21,12 @@
 						"referenceName": "comments_sink",
 						"type": "DatasetReference"
 					},
-					"name": "sinkfile"
+					"name": "COMMMENTSTABLE"
 				}
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "COLUMNSDERIVED"
 				}
 			],
 			"scriptLines": [
@@ -43,15 +43,15 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> sourcecomments",
-				"sourcecomments derive(comment_id = concat(TranId, CommentID),",
+				"     ignoreNoFilesFound: false) ~> SOURCECOMMENTS",
+				"SOURCECOMMENTS derive(comment_id = concat(TranId, CommentID),",
 				"          transction_date = toTimestamp(\r",
 				"    toString(POSTDATE) + ' ' + \r",
 				"    substring(lpad(toString(POSTTIME), 4, '0'), 0, 2) + ':' + \r",
 				"    substring(lpad(toString(POSTTIME), 4, '0'), 3, 4),\r",
 				"    'yyyy-MM-dd HH:mm'\r",
-				")) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				")) ~> COLUMNSDERIVED",
+				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          comment_id as long,",
@@ -76,7 +76,7 @@
 				"          comment_value = Comment,",
 				"          transaction_id = TranId",
 				"     ),",
-				"     partitionBy('hash', 1)) ~> sinkfile"
+				"     partitionBy('hash', 1)) ~> COMMMENTSTABLE"
 			]
 		}
 	}

@@ -12,7 +12,7 @@
 						"referenceName": "member_stories",
 						"type": "DatasetReference"
 					},
-					"name": "source"
+					"name": "MEMBERSTORIESSOURCE"
 				}
 			],
 			"sinks": [
@@ -21,7 +21,7 @@
 						"referenceName": "member_stories_sink",
 						"type": "DatasetReference"
 					},
-					"name": "sink",
+					"name": "MEMBERSTORIESTABLE",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureBlobStorage1",
 						"type": "LinkedServiceReference"
@@ -30,19 +30,19 @@
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn2"
+					"name": "COLUMNSDERIVED1"
 				},
 				{
-					"name": "flatten1"
+					"name": "COMMENTSFLATTEN"
 				},
 				{
-					"name": "filter1"
+					"name": "COMMENTSARRAYFILTER"
 				},
 				{
-					"name": "derivedColumn3"
+					"name": "COLUMNSDERIVED2"
 				},
 				{
-					"name": "surrogateKey1"
+					"name": "STORYID"
 				}
 			],
 			"scriptLines": [
@@ -54,8 +54,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     partitionBy('hash', 1)) ~> source",
-				"source derive(fsh_name = substring(\r",
+				"     partitionBy('hash', 1)) ~> MEMBERSTORIESSOURCE",
+				"MEMBERSTORIESSOURCE derive(fsh_name = substring(\r",
 				"    Comments,\r",
 				"    locate('Added by: ', Comments) + length('Added by: '),\r",
 				"    locate(' - ', Comments) - (locate('Added by: ', Comments) + length('Added by: '))\r",
@@ -75,8 +75,8 @@
 				"    locate('On: ', Comments) + length('On: '),\r",
 				"    locate('***', Comments, locate('***', Comments) + 1) - (locate('On: ', Comments) + length('On: '))\r",
 				"),",
-				"          comments_array = split(Comments, '***')) ~> derivedColumn2",
-				"derivedColumn2 foldDown(unroll(comments_array),",
+				"          comments_array = split(Comments, '***')) ~> COLUMNSDERIVED1",
+				"COLUMNSDERIVED1 foldDown(unroll(comments_array),",
 				"     mapColumn(",
 				"          Comments,",
 				"          DetailEntryValue,",
@@ -88,16 +88,16 @@
 				"          comments_array",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> flatten1",
-				"derivedColumn3 filter(length(replace(toString(comments_array), ' ', '')) > 0",
-				"&& !startsWith(toString(comments_array), 'Added by:')) ~> filter1",
-				"flatten1 derive(story_id = id,",
+				"     skipDuplicateMapOutputs: true) ~> COMMENTSFLATTEN",
+				"COLUMNSDERIVED2 filter(length(replace(toString(comments_array), ' ', '')) > 0",
+				"&& !startsWith(toString(comments_array), 'Added by:')) ~> COMMENTSARRAYFILTER",
+				"COMMENTSFLATTEN derive(story_id = id,",
 				"          story_reason = comments_array,",
-				"          story_date = toString(toTimestamp(story_date, 'MM/dd/yyyy hh:mm:ss a'), 'yyyy-MM-dd HH:mm:ss.SSS')) ~> derivedColumn3",
-				"filter1 keyGenerate(output(story_id as long),",
+				"          story_date = toString(toTimestamp(story_date, 'MM/dd/yyyy hh:mm:ss a'), 'yyyy-MM-dd HH:mm:ss.SSS')) ~> COLUMNSDERIVED2",
+				"COMMENTSARRAYFILTER keyGenerate(output(story_id as long),",
 				"     startAt: 1L,",
-				"     stepValue: 1L) ~> surrogateKey1",
-				"surrogateKey1 sink(allowSchemaDrift: true,",
+				"     stepValue: 1L) ~> STORYID",
+				"STORYID sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          story_id as long,",
@@ -124,7 +124,7 @@
 				"          fhs_id = id,",
 				"          branch_id,",
 				"          story_reason",
-				"     )) ~> sink"
+				"     )) ~> MEMBERSTORIESTABLE"
 			]
 		}
 	}

@@ -12,7 +12,7 @@
 						"referenceName": "Share_accountcsv",
 						"type": "DatasetReference"
 					},
-					"name": "source"
+					"name": "SHAREACCOUNTSOURCE"
 				}
 			],
 			"sinks": [
@@ -21,7 +21,7 @@
 						"referenceName": "Share_account",
 						"type": "DatasetReference"
 					},
-					"name": "sink1",
+					"name": "SHAREACCOUNTTABLE",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureBlobStorage1",
 						"type": "LinkedServiceReference"
@@ -30,7 +30,7 @@
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "COLUMNSDERIVED"
 				}
 			],
 			"scriptLines": [
@@ -307,10 +307,10 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     partitionBy('hash', 1)) ~> source",
-				"source derive(share_id = concat(PWC_Key, ID),",
-				"     partitionBy('hash', 1)) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     partitionBy('hash', 1)) ~> SHAREACCOUNTSOURCE",
+				"SHAREACCOUNTSOURCE derive(share_id = concat(PWC_Key, ID),",
+				"     partitionBy('hash', 1)) ~> COLUMNSDERIVED",
+				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          share_id as long,",
@@ -347,7 +347,7 @@
 				"          available_balance = BALANCE,",
 				"          product_id = TYPE",
 				"     ),",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     partitionBy('hash', 1)) ~> SHAREACCOUNTTABLE"
 			]
 		}
 	}
