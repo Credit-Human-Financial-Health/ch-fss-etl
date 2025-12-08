@@ -134,7 +134,7 @@
 			}
 		},
 		"folder": {
-			"name": "FSS_DATALOAD_PL/PL_TRANSACTION"
+			"name": "FSS_DATALOAD_PL/FSS_TRANSACTION_PL"
 		},
 		"annotations": [],
 		"lastPublishTime": "2025-11-19T21:46:21Z"
