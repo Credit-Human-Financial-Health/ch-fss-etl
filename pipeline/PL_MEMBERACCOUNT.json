@@ -58,9 +58,10 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "anonymized_member",
 						"dependencyConditions": [
-							"Succeeded"
+							"Succeeded",
+							"Failed"
 						]
 					}
 				],
@@ -104,7 +105,7 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "AzurePostgreSql1",
+					"referenceName": "CH_FSS_Postgres_sql",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
@@ -121,14 +122,16 @@
 				}
 			},
 			{
-				"name": "Copy data1",
-				"type": "Copy",
+				"name": "anonymized_member",
+				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "member_account_data",
 						"dependencyConditions": [
-							"Failed",
-							"Succeeded"
+							"Succeeded",
+							"Failed"
 						]
 					}
 				],
@@ -140,47 +143,19 @@
 					"secureInput": false
 				},
 				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"wildcardFileName": "*account.csv",
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "AzurePostgreSqlSink",
-						"writeBatchSize": 1000000,
-						"writeBatchTimeout": "00:30:00",
-						"writeMethod": "CopyCommand"
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+				"linkedServiceName": {
+					"referenceName": "CH_FSS_Postgres_sql",
+					"type": "LinkedServiceReference"
 				},
-				"inputs": [
-					{
-						"referenceName": "member_account_sinkcsv",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "member_account_sink",
-						"type": "DatasetReference"
-					}
-				]
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "INSERT INTO ch_fss.anonymized_member (anonymized_member_id, member_id)\nSELECT account_id, account_id\nFROM ch_fss.member_account\nWHERE account_id IS NOT NULL;\n\n"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
 			}
 		],
 		"variables": {

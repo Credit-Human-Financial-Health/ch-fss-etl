@@ -18,7 +18,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "member_account_sinkcsv",
+						"referenceName": "member_account_sink",
 						"type": "DatasetReference"
 					},
 					"name": "MEMBERSINKCSV",
@@ -203,14 +203,42 @@
 				"SOURCEMEMBER derive(product_id = iifNull(TYPE,'p'),",
 				"     partitionBy('hash', 1)) ~> COLUMNSDERIVED",
 				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
-				"     validateSchema: true,",
-				"     partitionFileNames:['account.csv'],",
-				"     truncate: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          account_id as integer,",
+				"          open_date as date,",
+				"          close_date as date,",
+				"          branch as string,",
+				"          status as string,",
+				"          household_account_number as string,",
+				"          member_group_name as string,",
+				"          product_id as integer,",
+				"          created_date as timestamp,",
+				"          created_by as string,",
+				"          updated_date as timestamp,",
+				"          updated_by as string,",
+				"          account_type_id as integer,",
+				"          anonymized_member_id as long",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     postSQLs:['INSERT INTO ch_fss.anonymized_member (anonymized_member_id, member_id)\\nSELECT account_id, account_id\\nFROM ch_fss.member_account\\nWHERE account_id IS NOT NULL;'],",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'fss',",
 				"     assertFailure_folderPath: 'error',",
-				"     partitionBy('hash', 1),",
-				"     format: 'table') ~> MEMBERSINKCSV"
+				"     mapColumn(",
+				"          account_id = PWC_Key,",
+				"          open_date = OPENDATE,",
+				"          close_date = CLOSEDATE,",
+				"          branch = BRANCH,",
+				"          status = MEMBERSTATUS,",
+				"          account_type_id = TYPE,",
+				"          product_id",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> MEMBERSINKCSV"
 			]
 		}
 	}
