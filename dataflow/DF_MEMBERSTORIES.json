@@ -17,10 +17,6 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "member_stories_sink",
-						"type": "DatasetReference"
-					},
 					"name": "MEMBERSTORIESTABLE",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureBlobStorage1",
@@ -99,22 +95,6 @@
 				"     stepValue: 1L) ~> STORYID",
 				"STORYID sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          story_id as long,",
-				"          story_date as timestamp,",
-				"          story_reason as string,",
-				"          story_details as string,",
-				"          fhs_name as string,",
-				"          fhs_id as string,",
-				"          branch_id as string,",
-				"          account_id as integer,",
-				"          story_source_type_code_id as integer",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
 				"     saveOrder: 1,",
 				"     mapColumn(",
 				"          story_id,",
@@ -124,7 +104,8 @@
 				"          fhs_id = id,",
 				"          branch_id,",
 				"          story_reason",
-				"     )) ~> MEMBERSTORIESTABLE"
+				"     ),",
+				"     format: 'table') ~> MEMBERSTORIESTABLE"
 			]
 		}
 	}

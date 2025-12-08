@@ -8,19 +8,11 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "member_accountcsv",
-						"type": "DatasetReference"
-					},
 					"name": "SOURCEMEMBER"
 				}
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "member_account",
-						"type": "DatasetReference"
-					},
 					"name": "MEMBERTABLE"
 				}
 			],
@@ -194,33 +186,10 @@
 				"          UUID as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> SOURCEMEMBER",
+				"     validateSchema: false) ~> SOURCEMEMBER",
 				"SOURCEMEMBER derive(product_id = iifNull(TYPE,'p')) ~> COLUMNSDERIVED",
 				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          account_id as integer,",
-				"          min_balance as decimal(10,2),",
-				"          open_date as date,",
-				"          close_date as date,",
-				"          branch as string,",
-				"          status as string,",
-				"          household_account_number as string,",
-				"          member_group_name as string,",
-				"          product_id as integer,",
-				"          created_date as timestamp,",
-				"          created_by as string,",
-				"          updated_date as timestamp,",
-				"          updated_by as string,",
-				"          account_type_id as integer,",
-				"          anonymized_member_id as long",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
 				"     mapColumn(",
 				"          account_id = PWC_Key,",
 				"          open_date = OPENDATE,",
@@ -229,7 +198,8 @@
 				"          branch = BRANCH,",
 				"          product_id",
 				"     ),",
-				"     partitionBy('hash', 1)) ~> MEMBERTABLE"
+				"     partitionBy('hash', 1),",
+				"     format: 'table') ~> MEMBERTABLE"
 			]
 		}
 	}

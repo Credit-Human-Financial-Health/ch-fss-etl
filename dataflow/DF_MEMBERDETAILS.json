@@ -8,19 +8,11 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "member_details_csv",
-						"type": "DatasetReference"
-					},
 					"name": "MEMBERDETAILSSOURCE"
 				}
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "member_details_sink",
-						"type": "DatasetReference"
-					},
 					"name": "MEMBERDETAILSTABLE",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureBlobStorage1",
@@ -69,34 +61,12 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false,",
 				"     partitionBy('hash', 1)) ~> MEMBERDETAILSSOURCE",
 				"MEMBERDETAILSSOURCE derive(name = replace(FirstName, char(0), ''),",
 				"          {e-mail} = LastName,",
 				"          state = substring(rtrim(STATE), 1, 2)) ~> COLUMNSDERIVED",
 				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          member_id as integer,",
-				"          name as string,",
-				"          last_name as string,",
-				"          date_of_birth as date,",
-				"          ssn as string,",
-				"          address as string,",
-				"          city as string,",
-				"          state as string,",
-				"          zip_code as string,",
-				"          phone as string,",
-				"          email as string,",
-				"          branch as string,",
-				"          status as string,",
-				"          start_date as date",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
@@ -109,7 +79,8 @@
 				"          zip_code = ZIPCODE,",
 				"          start_date = MBRCREATEDATE,",
 				"          email = {e-mail}",
-				"     )) ~> MEMBERDETAILSTABLE"
+				"     ),",
+				"     format: 'table') ~> MEMBERDETAILSTABLE"
 			]
 		}
 	}

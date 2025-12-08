@@ -22,10 +22,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataflow": {
-						"referenceName": "DF_TRANSACTION_DATA",
-						"type": "DataFlowReference"
-					},
 					"compute": {
 						"coreCount": 32,
 						"computeType": "MemoryOptimized"
