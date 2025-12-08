@@ -1,8 +1,8 @@
 {
 	"name": "CH_FSS_POSTGRES_DB",
 	"properties": {
-		"annotations": [],
 		"type": "AzurePostgreSql",
+		"annotations": [],
 		"version": "2.0",
 		"typeProperties": {
 			"server": {
