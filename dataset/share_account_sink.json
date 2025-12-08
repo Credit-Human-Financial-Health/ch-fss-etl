@@ -2,7 +2,7 @@
 	"name": "share_account_sink",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzurePostgreSql1",
+			"referenceName": "CH_FSS_POSTGRES_DB",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {

@@ -8,19 +8,11 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "transaction_csv",
-						"type": "DatasetReference"
-					},
 					"name": "TRANSACTIONSOURCE"
 				}
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "transaction_postgres",
-						"type": "DatasetReference"
-					},
 					"name": "TRANSACTIONTABLE",
 					"description": "Export data to ",
 					"rejectedDataLinkedService": {
@@ -56,7 +48,6 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
-				"     ignoreNoFilesFound: false,",
 				"     partitionBy('hash', 1)) ~> TRANSACTIONSOURCE",
 				"TRANSACTIONSOURCE derive(transaction_code = case(\r",
 				"  toString(ACTIONCODE) == 'D', 1,\r",
@@ -68,27 +59,6 @@
 				"     partitionBy('hash', 1)) ~> COLUMNSDERIVED",
 				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          transaction_id as integer,",
-				"          transaction_status as string,",
-				"          transaction_date as timestamp,",
-				"          transaction_amount as decimal(10,2),",
-				"          description as string,",
-				"          merchant as string,",
-				"          payment_method as string,",
-				"          created_date as timestamp,",
-				"          created_by as string,",
-				"          updated_date as timestamp,",
-				"          updated_by as string,",
-				"          transaction_type_code_id as integer,",
-				"          share_id as long,",
-				"          balance as decimal(10,2)",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
 				"     mapColumn(",
 				"          transaction_id = TranId,",
 				"          transaction_date,",
@@ -99,7 +69,8 @@
 				"          transaction_type_code_id = transaction_code,",
 				"          share_id = SHARE_ID",
 				"     ),",
-				"     partitionBy('hash', 1)) ~> TRANSACTIONTABLE"
+				"     partitionBy('hash', 1),",
+				"     format: 'table') ~> TRANSACTIONTABLE"
 			]
 		}
 	}

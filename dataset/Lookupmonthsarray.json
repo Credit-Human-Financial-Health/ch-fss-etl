@@ -2,7 +2,7 @@
 	"name": "Lookupmonthsarray",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "CH_FSS_Postgres_sql",
+			"referenceName": "CH_FSS_POSTGRES_DB",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
@@ -25,7 +25,7 @@
 			}
 		],
 		"typeProperties": {
-			"schema": "ch_fss",
+			"schema": "Ch_fss",
 			"table": "watermark"
 		}
 	},
