@@ -1,12 +1,9 @@
 {
-	"name": "transaction_csv",
+	"name": "azuredatalakestorage",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
-		},
-		"folder": {
-			"name": "InitialLoad"
 		},
 		"annotations": [],
 		"type": "DelimitedText",

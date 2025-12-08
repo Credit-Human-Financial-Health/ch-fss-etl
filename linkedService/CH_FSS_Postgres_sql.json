@@ -1,5 +1,5 @@
 {
-	"name": "AzurePostgreSql1",
+	"name": "CH_FSS_Postgres_sql",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
@@ -10,7 +10,7 @@
 			"port": "5432",
 			"database": "postgres",
 			"sslMode": 2,
-			"username": "sqaladmin",
+			"username": "sqladmin",
 			"password": {
 				"type": "AzureKeyVaultSecret",
 				"store": {

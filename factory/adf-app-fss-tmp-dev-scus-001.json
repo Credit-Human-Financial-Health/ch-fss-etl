@@ -1,0 +1,9 @@
+{
+	"name": "adf-app-fss-tmp-dev-scus-001",
+	"location": "southcentralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1daf3b1f-4d57-49ba-96b1-2d5e7dd0f7aa",
+		"tenantId": "5b01ac9e-f5e0-487e-86b2-6755add5fc92"
+	}
+}

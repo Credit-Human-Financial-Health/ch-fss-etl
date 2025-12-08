@@ -5,9 +5,6 @@
 			"referenceName": "AzurePostgreSql1",
 			"type": "LinkedServiceReference"
 		},
-		"folder": {
-			"name": "DS_COMMENTS"
-		},
 		"annotations": [],
 		"type": "AzurePostgreSqlTable",
 		"schema": [

@@ -1,9 +1,12 @@
 {
-	"name": "member_accountcsv",
+	"name": "account_csv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "InitialLoad"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
@@ -11,7 +14,8 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "PWC_Extract_Account_2025_10_24.csv",
-				"container": "incomingfiles"
+				"folderPath": "PwC_Data",
+				"container": "fss"
 			},
 			"columnDelimiter": "|",
 			"escapeChar": "\\",

@@ -1,0 +1,10 @@
+{
+	"name": "pe-psql-app-fss-tmp-dev-scus-001",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/954e6be0-9b93-4a14-8954-8eeb9fd3b065/resourceGroups/rg-app-fss-tmp-dev-scus-001/providers/Microsoft.DBforPostgreSQL/flexibleServers/psql-app-fss-tmp-dev-scus-001",
+		"groupId": "postgresqlServer",
+		"fqdns": [
+			"psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
+		]
+	}
+}

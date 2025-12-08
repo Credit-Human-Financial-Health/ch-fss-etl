@@ -1,11 +1,11 @@
 {
-	"name": "AzureBlobStorage1",
+	"name": "CH_FSS_Blob_Storage",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
-			"serviceEndpoint": "https://sachappfsstmpdevtest123scus001.blob.core.windows.net/",
+			"serviceEndpoint": "https://sachappfsstmpdevscus001.blob.core.windows.net/",
 			"accountKind": "StorageV2"
 		},
 		"connectVia": {

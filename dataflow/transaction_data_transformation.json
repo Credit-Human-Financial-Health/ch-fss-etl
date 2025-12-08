@@ -1,0 +1,95 @@
+{
+	"name": "transaction_data_transformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "azuredatalakestorage",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzurePostgreSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedcolumns"
+				},
+				{
+					"name": "filter"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          TranId as integer,",
+				"          PARENTID as string,",
+				"          SEQUENCENUMBER as string,",
+				"          EFFECTIVEDATE as string,",
+				"          POSTDATE as date,",
+				"          POSTTIME as string,",
+				"          DESCRIPTION as string,",
+				"          ACTIONCODE as string,",
+				"          SOURCECODE as string,",
+				"          BALANCECHANGE as float,",
+				"          INTEREST as string,",
+				"          NEWBALANCE as float,",
+				"          FEEAMOUNT as string,",
+				"          COMMENT as string,",
+				"          BRANCH as string,",
+				"          PWC_key as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source",
+				"source derive(transaction_code = case(  toString(ACTIONCODE) == 'D', 1,\r",
+				"       toString(SOURCECODE) == 'F', 3,\r",
+				"       toString(ACTIONCODE) == 'W', 2),",
+				"          SHARE_ID = concat(PWC_key, PARENTID)) ~> derivedcolumns",
+				"derivedcolumns filter(BALANCECHANGE != 0) ~> filter",
+				"filter sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          transaction_id as integer,",
+				"          transaction_status as string,",
+				"          transaction_date as timestamp,",
+				"          transaction_amount as decimal(10,2),",
+				"          description as string,",
+				"          merchant as string,",
+				"          payment_method as string,",
+				"          created_date as timestamp,",
+				"          created_by as string,",
+				"          updated_date as timestamp,",
+				"          updated_by as string,",
+				"          transaction_type_code_id as integer,",
+				"          share_id as long,",
+				"          balance as decimal(10,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     mapColumn(",
+				"          transaction_id = TranId,",
+				"          transaction_date = POSTDATE,",
+				"          transaction_amount = BALANCECHANGE,",
+				"          description = DESCRIPTION,",
+				"          payment_method = SOURCECODE,",
+				"          transaction_type_code_id = transaction_code,",
+				"          share_id = SHARE_ID,",
+				"          balance = NEWBALANCE",
+				"     )) ~> sink"
+			]
+		}
+	}
+}

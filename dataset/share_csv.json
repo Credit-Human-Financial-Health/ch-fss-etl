@@ -1,5 +1,5 @@
 {
-	"name": "transaction_csv",
+	"name": "share_csv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "PWC_Trans_2025_10_31.csv",
+				"fileName": "PWC_Extract_Savings_2025_10_24.csv",
 				"folderPath": "PwC_Data",
 				"container": "fss"
 			},

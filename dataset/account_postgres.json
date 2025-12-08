@@ -1,9 +1,12 @@
 {
-	"name": "member_account",
+	"name": "account_postgres",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzurePostgreSql1",
+			"referenceName": "CH_FSS_Postgres_sql",
 			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "InitialLoad"
 		},
 		"annotations": [],
 		"type": "AzurePostgreSqlTable",
@@ -13,12 +16,6 @@
 				"type": "integer",
 				"precision": 0,
 				"scale": 0
-			},
-			{
-				"name": "min_balance",
-				"type": "numeric",
-				"precision": 10,
-				"scale": 2
 			},
 			{
 				"name": "open_date",

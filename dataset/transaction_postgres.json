@@ -1,64 +1,55 @@
 {
-	"name": "member_account",
+	"name": "transaction_postgres",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzurePostgreSql1",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "InitialLoad"
+		},
 		"annotations": [],
 		"type": "AzurePostgreSqlTable",
 		"schema": [
 			{
-				"name": "account_id",
+				"name": "transaction_id",
 				"type": "integer",
 				"precision": 0,
 				"scale": 0
 			},
 			{
-				"name": "min_balance",
+				"name": "transaction_status",
+				"type": "character",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "transaction_date",
+				"type": "timestamp without time zone",
+				"precision": 6,
+				"scale": 0
+			},
+			{
+				"name": "transaction_amount",
 				"type": "numeric",
 				"precision": 10,
 				"scale": 2
 			},
 			{
-				"name": "open_date",
-				"type": "date",
-				"precision": 0,
-				"scale": 0
-			},
-			{
-				"name": "close_date",
-				"type": "date",
-				"precision": 0,
-				"scale": 0
-			},
-			{
-				"name": "branch",
+				"name": "description",
 				"type": "character varying",
 				"precision": 0,
 				"scale": 0
 			},
 			{
-				"name": "status",
-				"type": "character",
+				"name": "merchant",
+				"type": "character varying",
 				"precision": 0,
 				"scale": 0
 			},
 			{
-				"name": "household_account_number",
-				"type": "character",
-				"precision": 0,
-				"scale": 0
-			},
-			{
-				"name": "member_group_name",
-				"type": "character",
-				"precision": 0,
-				"scale": 0
-			},
-			{
-				"name": "product_id",
-				"type": "integer",
+				"name": "payment_method",
+				"type": "character varying",
 				"precision": 0,
 				"scale": 0
 			},
@@ -87,21 +78,27 @@
 				"scale": 0
 			},
 			{
-				"name": "account_type_id",
+				"name": "transaction_type_code_id",
 				"type": "integer",
 				"precision": 0,
 				"scale": 0
 			},
 			{
-				"name": "anonymized_member_id",
+				"name": "share_id",
 				"type": "bigint",
 				"precision": 0,
 				"scale": 0
+			},
+			{
+				"name": "balance",
+				"type": "numeric",
+				"precision": 10,
+				"scale": 2
 			}
 		],
 		"typeProperties": {
 			"schema": "ch_fss",
-			"table": "member_account"
+			"table": "transaction"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
