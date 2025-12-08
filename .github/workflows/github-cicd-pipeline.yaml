@@ -1,0 +1,82 @@
+name: Build & Deploy ADF (ARM)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # needed for OIDC with azure/login
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Use Node 20.x per Microsoft guidance for ADF utilities
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'  # IMPORTANT: use 20.x
+          cache: 'npm'
+          cache-dependency-path: |
+            build/package-lock.json
+            build/package.json
+      - name: Install ADF Utilities package
+        run: npm install
+        working-directory: ${{ github.workspace }}/build
+        # ensure build/package.json contains the "build" script shown earlier
+
+      # Validate like "Validate All" in ADF Studio
+      - name: Validate ADF resources
+        run: >
+          npm run build -- validate
+          ${{ github.workspace }}/
+          /subscriptions/954e6be0-9b93-4a14-8954-8eeb9fd3b065/resourceGroups/rg-app-fss-tmp-dev-scus-001/providers/Microsoft.DataFactory/factories/adf-app-fss-tmp-dev-scus-001
+        working-directory: ${{ github.workspace }}/build
+
+      # Export ARM templates artifact folder
+      - name: Validate & Export ARM template
+        run: >
+          npm run build -- export
+          ${{ github.workspace }}/
+          /subscriptions/954e6be0-9b93-4a14-8954-8eeb9fd3b065/resourceGroups/rg-app-fss-tmp-dev-scus-001/providers/Microsoft.DataFactory/factories/adf-app-fss-tmp-dev-scus-001
+          ExportedArmTemplate
+        working-directory: ${{ github.workspace }}/build
+
+      - name: Upload ARM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExportedArmTemplate
+          path: ${{ github.workspace }}/build/ExportedArmTemplate
+
+  Dev-release:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: dev
+    steps:
+      - name: Download ARM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ExportedArmTemplate
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+
+      # Option A: ADF Deploy Action (pre/post safety)
+      - name: Deploy ADF with pre/post safety
+        uses: Azure/data-factory-deploy-action@v1.2.0
+        with:
+          resourceGroupName: rg-app-fss-tmp-dev-scus-001
+          dataFactoryName: ch-test
+          armTemplateFile: ARMTemplateForFactory.json
+          armTemplateParametersFile: ARMTemplateParametersForFactory.json
+          additionalParameters: AzureBlobStorage1_properties_typeProperties_serviceEndpoint=${{ vars.SERVICEENDPOINT }}
+          # skipAzModuleInstallation: false
