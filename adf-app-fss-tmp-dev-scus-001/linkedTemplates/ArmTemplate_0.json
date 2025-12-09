@@ -152,27 +152,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntime')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "AutoResolve",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 8,
-							"timeToLive": 10,
-							"cleanup": false,
-							"customProperties": []
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/default')]",
 			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
 			"apiVersion": "2018-06-01",
@@ -1060,7 +1039,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "CH_FSS_BLOB",
+					"referenceName": "CH_FSS_Blob_Storage",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -1728,7 +1707,7 @@
 				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_BLOB')]"
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Blob_Storage')]"
 			]
 		},
 		{
@@ -1838,6 +1817,639 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/member_details_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CH_FSS_Blob_Storage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DS_MEMBERDETAILS"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "DEV_PWC_Extract_Name_2025_12_3.csv",
+						"folderPath": "InitialData",
+						"container": "fss"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "PWC_Key",
+						"type": "String"
+					},
+					{
+						"name": "ORDINAL",
+						"type": "String"
+					},
+					{
+						"name": "TYPE",
+						"type": "String"
+					},
+					{
+						"name": "SUBTYPE",
+						"type": "String"
+					},
+					{
+						"name": "MAILOVERRIDE",
+						"type": "String"
+					},
+					{
+						"name": "SSNOVERRIDE",
+						"type": "String"
+					},
+					{
+						"name": "SSNCERTIFICATION",
+						"type": "String"
+					},
+					{
+						"name": "SSNTYPE",
+						"type": "String"
+					},
+					{
+						"name": "EFFECTIVEDATE",
+						"type": "String"
+					},
+					{
+						"name": "EXPIRATIONDATE",
+						"type": "String"
+					},
+					{
+						"name": "BIRTHDATE",
+						"type": "String"
+					},
+					{
+						"name": "TITLE",
+						"type": "String"
+					},
+					{
+						"name": "FIRST",
+						"type": "String"
+					},
+					{
+						"name": "MIDDLE",
+						"type": "String"
+					},
+					{
+						"name": "LAST",
+						"type": "String"
+					},
+					{
+						"name": "SUFFIX",
+						"type": "String"
+					},
+					{
+						"name": "EXTRAADDRESS",
+						"type": "String"
+					},
+					{
+						"name": "STREET",
+						"type": "String"
+					},
+					{
+						"name": "CITY",
+						"type": "String"
+					},
+					{
+						"name": "STATE",
+						"type": "String"
+					},
+					{
+						"name": "ZIPCODE",
+						"type": "String"
+					},
+					{
+						"name": "HOMEPHONE",
+						"type": "String"
+					},
+					{
+						"name": "SSN",
+						"type": "String"
+					},
+					{
+						"name": "WORKPHONE",
+						"type": "String"
+					},
+					{
+						"name": "LASTFMDATE",
+						"type": "String"
+					},
+					{
+						"name": "CARRIERROUTE",
+						"type": "String"
+					},
+					{
+						"name": "ADDRESSTYPE",
+						"type": "String"
+					},
+					{
+						"name": "BENEFICIARYPERCENT",
+						"type": "String"
+					},
+					{
+						"name": "IRSCORRECTION",
+						"type": "String"
+					},
+					{
+						"name": "WORKPHONEEXTENSION",
+						"type": "String"
+					},
+					{
+						"name": "CTREXEMPT",
+						"type": "String"
+					},
+					{
+						"name": "DEATHDATE",
+						"type": "String"
+					},
+					{
+						"name": "ECOACODE",
+						"type": "String"
+					},
+					{
+						"name": "COUNTRY",
+						"type": "String"
+					},
+					{
+						"name": "COUNTRYCODE",
+						"type": "String"
+					},
+					{
+						"name": "EMAIL",
+						"type": "String"
+					},
+					{
+						"name": "MOTHERSMAIDENNAME",
+						"type": "String"
+					},
+					{
+						"name": "EMPLOYERNAME",
+						"type": "String"
+					},
+					{
+						"name": "ALTEMAIL",
+						"type": "String"
+					},
+					{
+						"name": "LOCATOR",
+						"type": "String"
+					},
+					{
+						"name": "MOBILEPHONE",
+						"type": "String"
+					},
+					{
+						"name": "PAGERNUMBER",
+						"type": "String"
+					},
+					{
+						"name": "USPERSONFLAG",
+						"type": "String"
+					},
+					{
+						"name": "IDENTDOCFLAG1",
+						"type": "String"
+					},
+					{
+						"name": "IDENTDOCFLAG2",
+						"type": "String"
+					},
+					{
+						"name": "IDENTDOCFLAG3",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDTYPE1",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDTYPE2",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDTYPE3",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDDESCRIPTION1",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDDESCRIPTION2",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDDESCRIPTION3",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDNUMBER1",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDNUMBER2",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDNUMBER3",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDISSUEDATE1",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDISSUEDATE2",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDISSUEDATE3",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDEXPIREDATE1",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDEXPIREDATE2",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDEXPIREDATE3",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDVERIFYDATE1",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDVERIFYDATE2",
+						"type": "String"
+					},
+					{
+						"name": "IDENTIDVERIFYDATE3",
+						"type": "String"
+					},
+					{
+						"name": "OCCUPATION",
+						"type": "String"
+					},
+					{
+						"name": "USERCHAR1",
+						"type": "String"
+					},
+					{
+						"name": "USERCHAR2",
+						"type": "String"
+					},
+					{
+						"name": "USERCHAR3",
+						"type": "String"
+					},
+					{
+						"name": "USERCHAR4",
+						"type": "String"
+					},
+					{
+						"name": "USERAMOUNT1",
+						"type": "String"
+					},
+					{
+						"name": "USERAMOUNT2",
+						"type": "String"
+					},
+					{
+						"name": "USERDATE1",
+						"type": "String"
+					},
+					{
+						"name": "USERDATE2",
+						"type": "String"
+					},
+					{
+						"name": "LASTADDRVERIFDATE",
+						"type": "String"
+					},
+					{
+						"name": "CREDITREPORTCONSUMERINFO",
+						"type": "String"
+					},
+					{
+						"name": "NAMEFORMAT",
+						"type": "String"
+					},
+					{
+						"name": "EXTENDEDNAME",
+						"type": "String"
+					},
+					{
+						"name": "CREDITREPORTCONSUMERINFODATE",
+						"type": "String"
+					},
+					{
+						"name": "EXTRAINFO",
+						"type": "String"
+					},
+					{
+						"name": "RECORDCHANGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "MEMBERNUMBER",
+						"type": "String"
+					},
+					{
+						"name": "MBRSTATUS",
+						"type": "String"
+					},
+					{
+						"name": "MBRSTATUSFMDATE",
+						"type": "String"
+					},
+					{
+						"name": "MBRCREATEDATE",
+						"type": "String"
+					},
+					{
+						"name": "MBRFMLASTDATE",
+						"type": "String"
+					},
+					{
+						"name": "MBREXPDATE",
+						"type": "String"
+					},
+					{
+						"name": "MBRACTIVITYDATE",
+						"type": "String"
+					},
+					{
+						"name": "PHONETYPE",
+						"type": "String"
+					},
+					{
+						"name": "MBRADDRNUMBER",
+						"type": "String"
+					},
+					{
+						"name": "ADDRCREATEDATE",
+						"type": "String"
+					},
+					{
+						"name": "ADDRFMLASTDATE",
+						"type": "String"
+					},
+					{
+						"name": "ADDREXPDATE",
+						"type": "String"
+					},
+					{
+						"name": "NONACCTNAMENUM",
+						"type": "String"
+					},
+					{
+						"name": "MEMBERNUMLINK",
+						"type": "String"
+					},
+					{
+						"name": "MBRADDRNUMLINK",
+						"type": "String"
+					},
+					{
+						"name": "CURRGROSSMONTHPAY",
+						"type": "String"
+					},
+					{
+						"name": "CURRNETMONTHPAY",
+						"type": "String"
+					},
+					{
+						"name": "MBRFMLASTPURGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "ADDRFMLASTPURGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "FMLASTPURGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "MEMBERNUMLINKCHGDATE",
+						"type": "String"
+					},
+					{
+						"name": "MBRADDRNUMLINKCHGDATE",
+						"type": "String"
+					},
+					{
+						"name": "MBRRECORDCHANGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "MBRDISCONNECTDATE",
+						"type": "String"
+					},
+					{
+						"name": "ADDRRECORDCHANGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "ADDRDISCONNECTDATE",
+						"type": "String"
+					},
+					{
+						"name": "MBRFILETYPE",
+						"type": "String"
+					},
+					{
+						"name": "MBRADDRFILETYPE",
+						"type": "String"
+					},
+					{
+						"name": "RESTRICTACCESS",
+						"type": "String"
+					},
+					{
+						"name": "CONFIDENTIAL",
+						"type": "String"
+					},
+					{
+						"name": "MARKETINGADDRESS",
+						"type": "String"
+					},
+					{
+						"name": "CREDITREPORTADDRINDICATOR",
+						"type": "String"
+					},
+					{
+						"name": "CREDITREPORTADDRINDICATORDATE",
+						"type": "String"
+					},
+					{
+						"name": "DBANAMEFORMAT",
+						"type": "String"
+					},
+					{
+						"name": "DBATITLE",
+						"type": "String"
+					},
+					{
+						"name": "DBAFIRST",
+						"type": "String"
+					},
+					{
+						"name": "DBAMIDDLE",
+						"type": "String"
+					},
+					{
+						"name": "DBALAST",
+						"type": "String"
+					},
+					{
+						"name": "DBASUFFIX",
+						"type": "String"
+					},
+					{
+						"name": "DBAEXTENDEDNAME",
+						"type": "String"
+					},
+					{
+						"name": "SEX",
+						"type": "String"
+					},
+					{
+						"name": "IRSCOUNTRYCODE",
+						"type": "String"
+					},
+					{
+						"name": "NRATAXRATE",
+						"type": "String"
+					},
+					{
+						"name": "NRAEXEMPTIONCODE",
+						"type": "String"
+					},
+					{
+						"name": "FORMW8ONFILE",
+						"type": "String"
+					},
+					{
+						"name": "W8EXPIRATIONDATE",
+						"type": "String"
+					},
+					{
+						"name": "FOREIGNTIN",
+						"type": "String"
+					},
+					{
+						"name": "GIIN",
+						"type": "String"
+					},
+					{
+						"name": "SUBSTANTIALOWNER",
+						"type": "String"
+					},
+					{
+						"name": "CHAPTER4STATUSCODE",
+						"type": "String"
+					},
+					{
+						"name": "PREFERREDCONTACTMETHOD",
+						"type": "String"
+					},
+					{
+						"name": "ACTIVEDUTY",
+						"type": "String"
+					},
+					{
+						"name": "ACTIVEDUTYVERIFICATIONDATE",
+						"type": "String"
+					},
+					{
+						"name": "ACTIVEDUTYSTARTDATE",
+						"type": "String"
+					},
+					{
+						"name": "ACTIVEDUTYSEPARATIONDATE",
+						"type": "String"
+					},
+					{
+						"name": "LOB",
+						"type": "String"
+					},
+					{
+						"name": "LEI",
+						"type": "String"
+					},
+					{
+						"name": "BENEFICIALOWNER",
+						"type": "String"
+					},
+					{
+						"name": "BENEFICIALPERCENT",
+						"type": "String"
+					},
+					{
+						"name": "IRS1042SAMENDNUM",
+						"type": "String"
+					},
+					{
+						"name": "HEADQUARTERS",
+						"type": "String"
+					},
+					{
+						"name": "MBRVERSIONID",
+						"type": "String"
+					},
+					{
+						"name": "MBRUUID",
+						"type": "String"
+					},
+					{
+						"name": "MBRADDRVERSIONID",
+						"type": "String"
+					},
+					{
+						"name": "MBRADDRUUID",
+						"type": "String"
+					},
+					{
+						"name": "LASTADDRCHGDATE",
+						"type": "String"
+					},
+					{
+						"name": "CRNAMECHGDATE",
+						"type": "String"
+					},
+					{
+						"name": "CRADDRCHGDATE",
+						"type": "String"
+					},
+					{
+						"name": "CRSSNCHGDATE",
+						"type": "String"
+					},
+					{
+						"name": "CURRMTHPAYCHGDATE",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Blob_Storage')]"
 			]
 		}
 	]

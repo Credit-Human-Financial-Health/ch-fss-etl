@@ -13,637 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/member_details_csv')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CH_FSS_BLOB",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "DS_MEMBERDETAILS"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "DEV_PWC_Extract_Name_2025_12_3.csv",
-						"folderPath": "InitialData",
-						"container": "fss"
-					},
-					"columnDelimiter": "|",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "PWC_Key",
-						"type": "String"
-					},
-					{
-						"name": "ORDINAL",
-						"type": "String"
-					},
-					{
-						"name": "TYPE",
-						"type": "String"
-					},
-					{
-						"name": "SUBTYPE",
-						"type": "String"
-					},
-					{
-						"name": "MAILOVERRIDE",
-						"type": "String"
-					},
-					{
-						"name": "SSNOVERRIDE",
-						"type": "String"
-					},
-					{
-						"name": "SSNCERTIFICATION",
-						"type": "String"
-					},
-					{
-						"name": "SSNTYPE",
-						"type": "String"
-					},
-					{
-						"name": "EFFECTIVEDATE",
-						"type": "String"
-					},
-					{
-						"name": "EXPIRATIONDATE",
-						"type": "String"
-					},
-					{
-						"name": "BIRTHDATE",
-						"type": "String"
-					},
-					{
-						"name": "TITLE",
-						"type": "String"
-					},
-					{
-						"name": "FIRST",
-						"type": "String"
-					},
-					{
-						"name": "MIDDLE",
-						"type": "String"
-					},
-					{
-						"name": "LAST",
-						"type": "String"
-					},
-					{
-						"name": "SUFFIX",
-						"type": "String"
-					},
-					{
-						"name": "EXTRAADDRESS",
-						"type": "String"
-					},
-					{
-						"name": "STREET",
-						"type": "String"
-					},
-					{
-						"name": "CITY",
-						"type": "String"
-					},
-					{
-						"name": "STATE",
-						"type": "String"
-					},
-					{
-						"name": "ZIPCODE",
-						"type": "String"
-					},
-					{
-						"name": "HOMEPHONE",
-						"type": "String"
-					},
-					{
-						"name": "SSN",
-						"type": "String"
-					},
-					{
-						"name": "WORKPHONE",
-						"type": "String"
-					},
-					{
-						"name": "LASTFMDATE",
-						"type": "String"
-					},
-					{
-						"name": "CARRIERROUTE",
-						"type": "String"
-					},
-					{
-						"name": "ADDRESSTYPE",
-						"type": "String"
-					},
-					{
-						"name": "BENEFICIARYPERCENT",
-						"type": "String"
-					},
-					{
-						"name": "IRSCORRECTION",
-						"type": "String"
-					},
-					{
-						"name": "WORKPHONEEXTENSION",
-						"type": "String"
-					},
-					{
-						"name": "CTREXEMPT",
-						"type": "String"
-					},
-					{
-						"name": "DEATHDATE",
-						"type": "String"
-					},
-					{
-						"name": "ECOACODE",
-						"type": "String"
-					},
-					{
-						"name": "COUNTRY",
-						"type": "String"
-					},
-					{
-						"name": "COUNTRYCODE",
-						"type": "String"
-					},
-					{
-						"name": "EMAIL",
-						"type": "String"
-					},
-					{
-						"name": "MOTHERSMAIDENNAME",
-						"type": "String"
-					},
-					{
-						"name": "EMPLOYERNAME",
-						"type": "String"
-					},
-					{
-						"name": "ALTEMAIL",
-						"type": "String"
-					},
-					{
-						"name": "LOCATOR",
-						"type": "String"
-					},
-					{
-						"name": "MOBILEPHONE",
-						"type": "String"
-					},
-					{
-						"name": "PAGERNUMBER",
-						"type": "String"
-					},
-					{
-						"name": "USPERSONFLAG",
-						"type": "String"
-					},
-					{
-						"name": "IDENTDOCFLAG1",
-						"type": "String"
-					},
-					{
-						"name": "IDENTDOCFLAG2",
-						"type": "String"
-					},
-					{
-						"name": "IDENTDOCFLAG3",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDTYPE1",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDTYPE2",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDTYPE3",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDDESCRIPTION1",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDDESCRIPTION2",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDDESCRIPTION3",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDNUMBER1",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDNUMBER2",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDNUMBER3",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDISSUEDATE1",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDISSUEDATE2",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDISSUEDATE3",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDEXPIREDATE1",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDEXPIREDATE2",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDEXPIREDATE3",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDVERIFYDATE1",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDVERIFYDATE2",
-						"type": "String"
-					},
-					{
-						"name": "IDENTIDVERIFYDATE3",
-						"type": "String"
-					},
-					{
-						"name": "OCCUPATION",
-						"type": "String"
-					},
-					{
-						"name": "USERCHAR1",
-						"type": "String"
-					},
-					{
-						"name": "USERCHAR2",
-						"type": "String"
-					},
-					{
-						"name": "USERCHAR3",
-						"type": "String"
-					},
-					{
-						"name": "USERCHAR4",
-						"type": "String"
-					},
-					{
-						"name": "USERAMOUNT1",
-						"type": "String"
-					},
-					{
-						"name": "USERAMOUNT2",
-						"type": "String"
-					},
-					{
-						"name": "USERDATE1",
-						"type": "String"
-					},
-					{
-						"name": "USERDATE2",
-						"type": "String"
-					},
-					{
-						"name": "LASTADDRVERIFDATE",
-						"type": "String"
-					},
-					{
-						"name": "CREDITREPORTCONSUMERINFO",
-						"type": "String"
-					},
-					{
-						"name": "NAMEFORMAT",
-						"type": "String"
-					},
-					{
-						"name": "EXTENDEDNAME",
-						"type": "String"
-					},
-					{
-						"name": "CREDITREPORTCONSUMERINFODATE",
-						"type": "String"
-					},
-					{
-						"name": "EXTRAINFO",
-						"type": "String"
-					},
-					{
-						"name": "RECORDCHANGEDATE",
-						"type": "String"
-					},
-					{
-						"name": "MEMBERNUMBER",
-						"type": "String"
-					},
-					{
-						"name": "MBRSTATUS",
-						"type": "String"
-					},
-					{
-						"name": "MBRSTATUSFMDATE",
-						"type": "String"
-					},
-					{
-						"name": "MBRCREATEDATE",
-						"type": "String"
-					},
-					{
-						"name": "MBRFMLASTDATE",
-						"type": "String"
-					},
-					{
-						"name": "MBREXPDATE",
-						"type": "String"
-					},
-					{
-						"name": "MBRACTIVITYDATE",
-						"type": "String"
-					},
-					{
-						"name": "PHONETYPE",
-						"type": "String"
-					},
-					{
-						"name": "MBRADDRNUMBER",
-						"type": "String"
-					},
-					{
-						"name": "ADDRCREATEDATE",
-						"type": "String"
-					},
-					{
-						"name": "ADDRFMLASTDATE",
-						"type": "String"
-					},
-					{
-						"name": "ADDREXPDATE",
-						"type": "String"
-					},
-					{
-						"name": "NONACCTNAMENUM",
-						"type": "String"
-					},
-					{
-						"name": "MEMBERNUMLINK",
-						"type": "String"
-					},
-					{
-						"name": "MBRADDRNUMLINK",
-						"type": "String"
-					},
-					{
-						"name": "CURRGROSSMONTHPAY",
-						"type": "String"
-					},
-					{
-						"name": "CURRNETMONTHPAY",
-						"type": "String"
-					},
-					{
-						"name": "MBRFMLASTPURGEDATE",
-						"type": "String"
-					},
-					{
-						"name": "ADDRFMLASTPURGEDATE",
-						"type": "String"
-					},
-					{
-						"name": "FMLASTPURGEDATE",
-						"type": "String"
-					},
-					{
-						"name": "MEMBERNUMLINKCHGDATE",
-						"type": "String"
-					},
-					{
-						"name": "MBRADDRNUMLINKCHGDATE",
-						"type": "String"
-					},
-					{
-						"name": "MBRRECORDCHANGEDATE",
-						"type": "String"
-					},
-					{
-						"name": "MBRDISCONNECTDATE",
-						"type": "String"
-					},
-					{
-						"name": "ADDRRECORDCHANGEDATE",
-						"type": "String"
-					},
-					{
-						"name": "ADDRDISCONNECTDATE",
-						"type": "String"
-					},
-					{
-						"name": "MBRFILETYPE",
-						"type": "String"
-					},
-					{
-						"name": "MBRADDRFILETYPE",
-						"type": "String"
-					},
-					{
-						"name": "RESTRICTACCESS",
-						"type": "String"
-					},
-					{
-						"name": "CONFIDENTIAL",
-						"type": "String"
-					},
-					{
-						"name": "MARKETINGADDRESS",
-						"type": "String"
-					},
-					{
-						"name": "CREDITREPORTADDRINDICATOR",
-						"type": "String"
-					},
-					{
-						"name": "CREDITREPORTADDRINDICATORDATE",
-						"type": "String"
-					},
-					{
-						"name": "DBANAMEFORMAT",
-						"type": "String"
-					},
-					{
-						"name": "DBATITLE",
-						"type": "String"
-					},
-					{
-						"name": "DBAFIRST",
-						"type": "String"
-					},
-					{
-						"name": "DBAMIDDLE",
-						"type": "String"
-					},
-					{
-						"name": "DBALAST",
-						"type": "String"
-					},
-					{
-						"name": "DBASUFFIX",
-						"type": "String"
-					},
-					{
-						"name": "DBAEXTENDEDNAME",
-						"type": "String"
-					},
-					{
-						"name": "SEX",
-						"type": "String"
-					},
-					{
-						"name": "IRSCOUNTRYCODE",
-						"type": "String"
-					},
-					{
-						"name": "NRATAXRATE",
-						"type": "String"
-					},
-					{
-						"name": "NRAEXEMPTIONCODE",
-						"type": "String"
-					},
-					{
-						"name": "FORMW8ONFILE",
-						"type": "String"
-					},
-					{
-						"name": "W8EXPIRATIONDATE",
-						"type": "String"
-					},
-					{
-						"name": "FOREIGNTIN",
-						"type": "String"
-					},
-					{
-						"name": "GIIN",
-						"type": "String"
-					},
-					{
-						"name": "SUBSTANTIALOWNER",
-						"type": "String"
-					},
-					{
-						"name": "CHAPTER4STATUSCODE",
-						"type": "String"
-					},
-					{
-						"name": "PREFERREDCONTACTMETHOD",
-						"type": "String"
-					},
-					{
-						"name": "ACTIVEDUTY",
-						"type": "String"
-					},
-					{
-						"name": "ACTIVEDUTYVERIFICATIONDATE",
-						"type": "String"
-					},
-					{
-						"name": "ACTIVEDUTYSTARTDATE",
-						"type": "String"
-					},
-					{
-						"name": "ACTIVEDUTYSEPARATIONDATE",
-						"type": "String"
-					},
-					{
-						"name": "LOB",
-						"type": "String"
-					},
-					{
-						"name": "LEI",
-						"type": "String"
-					},
-					{
-						"name": "BENEFICIALOWNER",
-						"type": "String"
-					},
-					{
-						"name": "BENEFICIALPERCENT",
-						"type": "String"
-					},
-					{
-						"name": "IRS1042SAMENDNUM",
-						"type": "String"
-					},
-					{
-						"name": "HEADQUARTERS",
-						"type": "String"
-					},
-					{
-						"name": "MBRVERSIONID",
-						"type": "String"
-					},
-					{
-						"name": "MBRUUID",
-						"type": "String"
-					},
-					{
-						"name": "MBRADDRVERSIONID",
-						"type": "String"
-					},
-					{
-						"name": "MBRADDRUUID",
-						"type": "String"
-					},
-					{
-						"name": "LASTADDRCHGDATE",
-						"type": "String"
-					},
-					{
-						"name": "CRNAMECHGDATE",
-						"type": "String"
-					},
-					{
-						"name": "CRADDRCHGDATE",
-						"type": "String"
-					},
-					{
-						"name": "CRSSNCHGDATE",
-						"type": "String"
-					},
-					{
-						"name": "CURRMTHPAYCHGDATE",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/member_details_sink')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -780,7 +149,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "CH_FSS_BLOB",
+					"referenceName": "CH_FSS_Blob_Storage",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -789,7 +158,7 @@
 				"annotations": [],
 				"type": "Excel",
 				"typeProperties": {
-					"sheetName": "memberstories",
+					"sheetName": "synapsis.csv",
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"folderPath": "InitialData",
@@ -897,7 +266,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "CH_FSS_BLOB",
+					"referenceName": "CH_FSS_Blob_Storage",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -926,7 +295,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "CH_FSS_BLOB",
+					"referenceName": "CH_FSS_Blob_Storage",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -2225,7 +1594,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "CH_FSS_BLOB",
+					"referenceName": "CH_FSS_Blob_Storage",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -2291,7 +1660,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "CH_FSS_BLOB",
+					"referenceName": "CH_FSS_Blob_Storage",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -3360,7 +2729,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/member_details_csv')]",
 				"[concat(variables('factoryId'), '/datasets/member_details_sink')]"
 			]
 		},
@@ -4356,6 +3724,194 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/DF_MEMBERACCOUNT')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_MEMBERDETAILS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "MEMBERDETAILS",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "truncate memeber details",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_MEMBERDETAILS",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"MEMBERDETAILSSOURCE": {},
+									"MEMBERDETAILSTABLE": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "start_time",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "start_time",
+							"value": {
+								"value": "@formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm:ss')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "end_time",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "MEMBERDETAILS",
+								"dependencyConditions": [
+									"Succeeded",
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "end_time",
+							"value": {
+								"value": "@formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm:ss')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "job_run_status",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "end_time",
+								"dependencyConditions": [
+									"Succeeded",
+									"Failed"
+								]
+							},
+							{
+								"activity": "MEMBERDETAILS",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "CH_FSS_Postgres_sql",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('MEMBERDETAILS').status, '''', ',',\n  if(\n    equals(activity('MEMBERDETAILS').status, 'Failed'),\n    concat('''', replace(activity('MEMBERDETAILS').error.message.details, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "truncate memeber details",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "start_time",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "CH_FSS_Postgres_sql",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "TRUNCATE TABLE ch_fss.member CASCADE;"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"start_time": {
+						"type": "String"
+					},
+					"end_time": {
+						"type": "String"
+					},
+					"status": {
+						"type": "String"
+					},
+					"error": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "FSS_DATALOAD_PL"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_MEMBERDETAILS')]"
 			]
 		}
 	]
