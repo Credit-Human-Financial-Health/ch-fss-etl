@@ -1024,15 +1024,11 @@
 												"userProperties": [],
 												"typeProperties": {
 													"dataflow": {
-														"referenceName": "DF_TRANSACTIONDATA",
+														"referenceName": "DF_TRANSACTION",
 														"type": "DataFlowReference",
 														"parameters": {},
 														"datasetParameters": {
-															"TRANSACTIONSOURCE": {
-																"containerName": "fss",
-																"folderPath": "transactiondata",
-																"filePattern": "DEV_PWC_Trans_2*.csv"
-															},
+															"TRANSACTIONSOURCE": {},
 															"TRANSACTIONTABLE": {}
 														}
 													},
@@ -1063,7 +1059,7 @@
 									"typeProperties": {
 										"variableName": "filetype",
 										"value": {
-											"value": "@if(\n  contains(toLower(item().name), 'trans_comment'), \n  'trans_comment', \n  if(contains(toLower(item().name), 'Trans'), 'Trans', 'other')\n)",
+											"value": "@if(\n  contains(split(toLower(item()?['name']), '_'), 'trans_comment'),\n  'trans_comment',\n  if(contains(split(toLower(item()?['name']), '_'), 'trans'), 'trans', 'other')\n  )\n",
 											"type": "Expression"
 										}
 									}
@@ -1121,9 +1117,253 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/multiple_transaction')]",
 				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]",
-				"[concat(variables('factoryId'), '/dataflows/DF_TRANSACTIONDATA')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_TRANSACTION')]",
 				"[concat(variables('factoryId'), '/pipelines/PL_TRANSACTIONDATA')]",
 				"[concat(variables('factoryId'), '/pipelines/PL_TRANSCOMMENTS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_FSS_TRANSACTION_MULTIFILES_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "get files data",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "start_time",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "multiple_transaction",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems",
+								"itemName"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "get files data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('get files data').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "transaction_table",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "DF_TRANSACTION_DATA",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "CH_FSS_Postgres_sql",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "UPDATE ch_fss.\"transaction\" t\nSET transaction_type_code_id = CASE\n    WHEN t.transaction_amount < 0 AND t.payment_method = 'F' THEN 3\n    WHEN t.transaction_amount < 0 THEN 2\n    WHEN t.transaction_amount > 0 THEN 1\n    ELSE transaction_type_code_id  -- keep existing if none match\nEND;\n"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "end_time",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "transaction_table",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "end_time",
+										"value": {
+											"value": "@formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm:ss')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "job_run_status",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "end_time",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "CH_FSS_Postgres_sql",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('transaction_table').status, '''', ',',\n  if(\n    equals(activity('transaction_table').status, 'Failed'),\n    concat('''', replace(activity('transaction_table').error.message.details, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n  )",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "DF_TRANSACTION_DATA",
+									"type": "ExecuteDataFlow",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataflow": {
+											"referenceName": "DF_TRANSACTION",
+											"type": "DataFlowReference",
+											"parameters": {},
+											"datasetParameters": {
+												"TRANSACTIONSOURCE": {},
+												"TRANSACTIONTABLE": {}
+											}
+										},
+										"staging": {},
+										"compute": {
+											"coreCount": 32,
+											"computeType": "MemoryOptimized"
+										},
+										"traceLevel": "Fine"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "start_time",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "start_time",
+							"value": {
+								"value": "@formatDateTime(utcNow(), 'yyyy-MM-dd HH:mm:ss')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"start_time": {
+						"type": "String"
+					},
+					"end_time": {
+						"type": "String"
+					},
+					"status": {
+						"type": "String"
+					},
+					"error": {
+						"type": "String"
+					},
+					"filetype": {
+						"type": "String"
+					},
+					"expression": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "FSS_DATALOAD_PL/FSS_TRANSACTION_PL"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-11-08T19:05:37Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/multiple_transaction')]",
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_TRANSACTION')]"
 			]
 		},
 		{
@@ -1194,10 +1434,9 @@
 						"type": "SetVariable",
 						"dependsOn": [
 							{
-								"activity": "member_account_data",
+								"activity": "scoring group",
 								"dependencyConditions": [
-									"Succeeded",
-									"Failed"
+									"Succeeded"
 								]
 							}
 						],
@@ -1318,6 +1557,73 @@
 								{
 									"type": "Query",
 									"text": "truncate table ch_fss.anonymized_member cascade;"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "anonymized member",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "member_account_data",
+								"dependencyConditions": [
+									"Failed",
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "CH_FSS_Postgres_sql",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "insert into ch_fss.anonymized_member(anonymized_member_id,member_id)\n\nselect member_id,member_id from ch_fss.\"member\"\n "
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "scoring group",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "anonymized member",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "CH_FSS_Postgres_sql",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "insert into ch_fss.scoring_group (\ngroup_type_code_id,\naccount_id,\ncreated_by,\ncreated_date,\nupdated_by,\nupdated_date)\nselect \n1,\nma.account_id , \n'admin',\nnow(), \n'admin',\nnow()\nfrom ch_fss.member_account ma\nwhere ma.close_date is null"
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2314,7 +2620,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "DF_TRANSACTIONDATA",
+								"referenceName": "DF_TRANSACTION",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -2473,7 +2779,7 @@
 				"lastPublishTime": "2025-11-19T21:46:21Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_TRANSACTIONDATA')]",
+				"[concat(variables('factoryId'), '/dataflows/DF_TRANSACTION')]",
 				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]"
 			]
 		},
@@ -5757,20 +6063,6 @@
 					"referenceName": "CH_FSS_Blob_Storage",
 					"type": "LinkedServiceReference"
 				},
-				"parameters": {
-					"containerName": {
-						"type": "String",
-						"defaultValue": "fss"
-					},
-					"folderPath": {
-						"type": "string",
-						"defaultValue": "transactiondata"
-					},
-					"filePattern": {
-						"type": "string",
-						"defaultValue": "DEV_PWC_Trans_2*.csv"
-					}
-				},
 				"folder": {
 					"name": "DS_TRANSACTION"
 				},
@@ -5779,10 +6071,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().filePattern",
-							"type": "Expression"
-						},
 						"folderPath": "transactiondata",
 						"container": "fss"
 					},
@@ -7296,7 +7584,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DF_TRANSACTIONDATA')]",
+			"name": "[concat(parameters('factoryName'), '/DF_TRANSACTION')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -7353,8 +7641,7 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
-						"     moveFiles: ['InitialData','archive'],",
-						"     fileList: true,",
+						"     moveFiles: ['transactiondata','archive'],",
 						"     partitionBy('hash', 1)) ~> TRANSACTIONSOURCE",
 						"TRANSACTIONSOURCE derive(transaction_code = case(\r",
 						"  toString(ACTIONCODE) == 'D', 1,\r",
