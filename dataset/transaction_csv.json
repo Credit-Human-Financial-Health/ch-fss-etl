@@ -2,8 +2,22 @@
 	"name": "transaction_csv",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "CH_FSS_Blob_Storage",
+			"referenceName": "CH_FSS_BLOB",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"containerName": {
+				"type": "String",
+				"defaultValue": "fss"
+			},
+			"folderPath": {
+				"type": "string",
+				"defaultValue": "transactiondata"
+			},
+			"filePattern": {
+				"type": "string",
+				"defaultValue": "DEV_PWC_Trans_2*.csv"
+			}
 		},
 		"folder": {
 			"name": "DS_TRANSACTION"
@@ -13,7 +27,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "DEV_PWC_Trans_202401_2025_12_5.csv",
+				"fileName": {
+					"value": "@dataset().filePattern",
+					"type": "Expression"
+				},
 				"folderPath": "transactiondata",
 				"container": "fss"
 			},
