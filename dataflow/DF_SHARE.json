@@ -1,5 +1,5 @@
 {
-	"name": "DF_SHARE_ACCOUNT",
+	"name": "DF_SHARE",
 	"properties": {
 		"folder": {
 			"name": "FSS_DATAFLOW"
