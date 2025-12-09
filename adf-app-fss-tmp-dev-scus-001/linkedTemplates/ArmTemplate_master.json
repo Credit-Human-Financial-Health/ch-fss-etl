@@ -7,25 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-app-fss-tmp-dev-scus-001"
 		},
-		"AzureDataLakeStorage1_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
-		},
-		"PostgreSql_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'PostgreSql'"
-		},
-		"financial_slack_score_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'financial_slack_score'"
-		},
 		"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
 			"type": "string",
 			"defaultValue": "https://sachappfsstmpdevtest123scus001.blob.core.windows.net/"
-		},
-		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://sachappfsstmpdevscus001.dfs.core.windows.net/"
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -43,9 +27,35 @@
 			"type": "string",
 			"defaultValue": "sqaladmin"
 		},
+		"CH_FSS_BLOB_properties_typeProperties_serviceEndpoint": {
+			"type": "object",
+			"defaultValue": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "FSS-BLOB-ENDPOINT"
+			}
+		},
 		"CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint": {
 			"type": "string",
 			"defaultValue": "https://sachappfsstmpdevscus001.blob.core.windows.net/"
+		},
+		"CH_FSS_POSTGRES_DB_properties_typeProperties_server": {
+			"type": "object",
+			"defaultValue": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "FSS-DB-URL"
+			}
+		},
+		"CH_FSS_POSTGRES_DB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "postgres"
 		},
 		"CH_FSS_Postgres_sql_properties_typeProperties_server": {
 			"type": "string",
@@ -59,29 +69,13 @@
 			"type": "string",
 			"defaultValue": "sqladmin"
 		},
-		"PostgreSql_properties_typeProperties_server": {
+		"CH_TST_DB_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "credithumandb.postgres.database.azure.com"
+			"defaultValue": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
 		},
-		"PostgreSql_properties_typeProperties_database": {
+		"CH_TST_DB_properties_typeProperties_database": {
 			"type": "string",
-			"defaultValue": "credit_human_db"
-		},
-		"PostgreSql_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "credithumanadmin"
-		},
-		"financial_slack_score_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "credithumandb.postgres.database.azure.com"
-		},
-		"financial_slack_score_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "credit_human_db"
-		},
-		"financial_slack_score_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "credithumanadmin"
+			"defaultValue": "postgres"
 		},
 		"AzureDataLakeStorage568_properties_privateLinkResourceId": {
 			"type": "string",
@@ -166,35 +160,8 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"PostgreSql_password": {
-						"value": "[parameters('PostgreSql_password')]"
-					},
-					"financial_slack_score_password": {
-						"value": "[parameters('financial_slack_score_password')]"
-					},
-					"AzureDataLakeStorage1_accountKey": {
-						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
-					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
-					},
-					"PostgreSql_properties_typeProperties_server": {
-						"value": "[parameters('PostgreSql_properties_typeProperties_server')]"
-					},
-					"PostgreSql_properties_typeProperties_database": {
-						"value": "[parameters('PostgreSql_properties_typeProperties_database')]"
-					},
-					"PostgreSql_properties_typeProperties_username": {
-						"value": "[parameters('PostgreSql_properties_typeProperties_username')]"
-					},
-					"financial_slack_score_properties_typeProperties_server": {
-						"value": "[parameters('financial_slack_score_properties_typeProperties_server')]"
-					},
-					"financial_slack_score_properties_typeProperties_database": {
-						"value": "[parameters('financial_slack_score_properties_typeProperties_database')]"
-					},
-					"financial_slack_score_properties_typeProperties_username": {
-						"value": "[parameters('financial_slack_score_properties_typeProperties_username')]"
 					},
 					"AzureDataLakeStorage568_properties_privateLinkResourceId": {
 						"value": "[parameters('AzureDataLakeStorage568_properties_privateLinkResourceId')]"
@@ -235,9 +202,6 @@
 					"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('AzureBlobStorage1_properties_typeProperties_serviceEndpoint')]"
 					},
-					"AzureDataLakeStorage1_properties_typeProperties_url": {
-						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
-					},
 					"AzurePostgreSql1_properties_typeProperties_server": {
 						"value": "[parameters('AzurePostgreSql1_properties_typeProperties_server')]"
 					},
@@ -247,8 +211,17 @@
 					"AzurePostgreSql1_properties_typeProperties_username": {
 						"value": "[parameters('AzurePostgreSql1_properties_typeProperties_username')]"
 					},
+					"CH_FSS_BLOB_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('CH_FSS_BLOB_properties_typeProperties_serviceEndpoint')]"
+					},
 					"CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint')]"
+					},
+					"CH_FSS_POSTGRES_DB_properties_typeProperties_server": {
+						"value": "[parameters('CH_FSS_POSTGRES_DB_properties_typeProperties_server')]"
+					},
+					"CH_FSS_POSTGRES_DB_properties_typeProperties_database": {
+						"value": "[parameters('CH_FSS_POSTGRES_DB_properties_typeProperties_database')]"
 					},
 					"CH_FSS_Postgres_sql_properties_typeProperties_server": {
 						"value": "[parameters('CH_FSS_Postgres_sql_properties_typeProperties_server')]"
@@ -258,6 +231,12 @@
 					},
 					"CH_FSS_Postgres_sql_properties_typeProperties_username": {
 						"value": "[parameters('CH_FSS_Postgres_sql_properties_typeProperties_username')]"
+					},
+					"CH_TST_DB_properties_typeProperties_server": {
+						"value": "[parameters('CH_TST_DB_properties_typeProperties_server')]"
+					},
+					"CH_TST_DB_properties_typeProperties_database": {
+						"value": "[parameters('CH_TST_DB_properties_typeProperties_database')]"
 					}
 				}
 			},
@@ -301,66 +280,6 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'adf-app-fss-tmp-dev-scus-001_ArmTemplate_1')]"
-			]
-		},
-		{
-			"name": "adf-app-fss-tmp-dev-scus-001_ArmTemplate_3",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2024-03-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'adf-app-fss-tmp-dev-scus-001_ArmTemplate_2')]"
-			]
-		},
-		{
-			"name": "adf-app-fss-tmp-dev-scus-001_ArmTemplate_4",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2024-03-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'adf-app-fss-tmp-dev-scus-001_ArmTemplate_3')]"
-			]
-		},
-		{
-			"name": "adf-app-fss-tmp-dev-scus-001_ArmTemplate_5",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2024-03-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'adf-app-fss-tmp-dev-scus-001_ArmTemplate_4')]"
 			]
 		}
 	]

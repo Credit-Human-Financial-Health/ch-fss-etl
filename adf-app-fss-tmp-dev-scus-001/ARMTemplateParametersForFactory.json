@@ -5,20 +5,8 @@
 		"factoryName": {
 			"value": "adf-app-fss-tmp-dev-scus-001"
 		},
-		"AzureDataLakeStorage1_accountKey": {
-			"value": ""
-		},
-		"PostgreSql_password": {
-			"value": ""
-		},
-		"financial_slack_score_password": {
-			"value": ""
-		},
 		"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
 			"value": "https://sachappfsstmpdevtest123scus001.blob.core.windows.net/"
-		},
-		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"value": "https://sachappfsstmpdevscus001.dfs.core.windows.net/"
 		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://kvappfsstmpdevscus001.vault.azure.net/"
@@ -32,8 +20,31 @@
 		"AzurePostgreSql1_properties_typeProperties_username": {
 			"value": "sqaladmin"
 		},
+		"CH_FSS_BLOB_properties_typeProperties_serviceEndpoint": {
+			"value": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "FSS-BLOB-ENDPOINT"
+			}
+		},
 		"CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint": {
 			"value": "https://sachappfsstmpdevscus001.blob.core.windows.net/"
+		},
+		"CH_FSS_POSTGRES_DB_properties_typeProperties_server": {
+			"value": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "FSS-DB-URL"
+			}
+		},
+		"CH_FSS_POSTGRES_DB_properties_typeProperties_database": {
+			"value": "postgres"
 		},
 		"CH_FSS_Postgres_sql_properties_typeProperties_server": {
 			"value": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
@@ -44,23 +55,11 @@
 		"CH_FSS_Postgres_sql_properties_typeProperties_username": {
 			"value": "sqladmin"
 		},
-		"PostgreSql_properties_typeProperties_server": {
-			"value": "credithumandb.postgres.database.azure.com"
+		"CH_TST_DB_properties_typeProperties_server": {
+			"value": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
 		},
-		"PostgreSql_properties_typeProperties_database": {
-			"value": "credit_human_db"
-		},
-		"PostgreSql_properties_typeProperties_username": {
-			"value": "credithumanadmin"
-		},
-		"financial_slack_score_properties_typeProperties_server": {
-			"value": "credithumandb.postgres.database.azure.com"
-		},
-		"financial_slack_score_properties_typeProperties_database": {
-			"value": "credit_human_db"
-		},
-		"financial_slack_score_properties_typeProperties_username": {
-			"value": "credithumanadmin"
+		"CH_TST_DB_properties_typeProperties_database": {
+			"value": "postgres"
 		},
 		"AzureDataLakeStorage568_properties_privateLinkResourceId": {
 			"value": "/subscriptions/954e6be0-9b93-4a14-8954-8eeb9fd3b065/resourceGroups/rg-app-fss-tmp-dev-scus-001/providers/Microsoft.Storage/storageAccounts/sachappfsstmpdevscus001"

@@ -7,45 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-app-fss-tmp-dev-scus-001"
 		},
-		"PostgreSql_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'PostgreSql'"
-		},
-		"financial_slack_score_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'financial_slack_score'"
-		},
-		"AzureDataLakeStorage1_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
-		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://kvappfsstmpdevscus001.vault.azure.net/"
-		},
-		"PostgreSql_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "credithumandb.postgres.database.azure.com"
-		},
-		"PostgreSql_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "credit_human_db"
-		},
-		"PostgreSql_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "credithumanadmin"
-		},
-		"financial_slack_score_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "credithumandb.postgres.database.azure.com"
-		},
-		"financial_slack_score_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "credit_human_db"
-		},
-		"financial_slack_score_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "credithumanadmin"
 		},
 		"AzureDataLakeStorage568_properties_privateLinkResourceId": {
 			"type": "string",
@@ -107,10 +71,6 @@
 			"type": "string",
 			"defaultValue": "https://sachappfsstmpdevtest123scus001.blob.core.windows.net/"
 		},
-		"AzureDataLakeStorage1_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://sachappfsstmpdevscus001.dfs.core.windows.net/"
-		},
 		"AzurePostgreSql1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
@@ -123,9 +83,35 @@
 			"type": "string",
 			"defaultValue": "sqaladmin"
 		},
+		"CH_FSS_BLOB_properties_typeProperties_serviceEndpoint": {
+			"type": "object",
+			"defaultValue": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "FSS-BLOB-ENDPOINT"
+			}
+		},
 		"CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint": {
 			"type": "string",
 			"defaultValue": "https://sachappfsstmpdevscus001.blob.core.windows.net/"
+		},
+		"CH_FSS_POSTGRES_DB_properties_typeProperties_server": {
+			"type": "object",
+			"defaultValue": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "FSS-DB-URL"
+			}
+		},
+		"CH_FSS_POSTGRES_DB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "postgres"
 		},
 		"CH_FSS_Postgres_sql_properties_typeProperties_server": {
 			"type": "string",
@@ -138,6 +124,14 @@
 		"CH_FSS_Postgres_sql_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "sqladmin"
+		},
+		"CH_TST_DB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
+		},
+		"CH_TST_DB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "postgres"
 		}
 	},
 	"variables": {
@@ -153,51 +147,6 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PostgreSql')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "PostgreSqlV2",
-				"typeProperties": {
-					"server": "[parameters('PostgreSql_properties_typeProperties_server')]",
-					"port": 5432,
-					"database": "[parameters('PostgreSql_properties_typeProperties_database')]",
-					"username": "[parameters('PostgreSql_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('PostgreSql_password')]"
-					},
-					"sslMode": 2,
-					"authenticationType": "Basic"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/financial_slack_score')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzurePostgreSql",
-				"version": "2.0",
-				"typeProperties": {
-					"server": "[parameters('financial_slack_score_properties_typeProperties_server')]",
-					"port": "5432",
-					"database": "[parameters('financial_slack_score_properties_typeProperties_database')]",
-					"sslMode": 2,
-					"username": "[parameters('financial_slack_score_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('financial_slack_score_password')]"
-					},
-					"authenticationType": "Basic"
 				}
 			},
 			"dependsOn": []
@@ -229,27 +178,6 @@
 			"apiVersion": "2018-06-01",
 			"properties": {},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/watremark_table')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "PostgreSql",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "PostgreSqlV2Table",
-				"schema": [],
-				"typeProperties": {
-					"schema": "ch_fss",
-					"table": "watermark_table"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/PostgreSql')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AutoResolveIntegrationRuntime')]",
@@ -349,29 +277,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzurePostgreSql1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -406,6 +311,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CH_FSS_BLOB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "AzureBlobStorage",
+				"annotations": [],
+				"typeProperties": {
+					"serviceEndpoint": "[parameters('CH_FSS_BLOB_properties_typeProperties_serviceEndpoint')]",
+					"accountKind": "StorageV2"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CH_FSS_Blob_Storage')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -422,6 +348,31 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CH_FSS_POSTGRES_DB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "AzurePostgreSql",
+				"annotations": [],
+				"version": "2.0",
+				"typeProperties": {
+					"server": "[parameters('CH_FSS_POSTGRES_DB_properties_typeProperties_server')]",
+					"port": "5432",
+					"database": "[parameters('CH_FSS_POSTGRES_DB_properties_typeProperties_database')]",
+					"sslMode": 2,
+					"authenticationType": "SystemAssignedManagedIdentity"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]",
 				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
@@ -460,7 +411,31 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Account_group_fin_stat')]",
+			"name": "[concat(parameters('factoryName'), '/CH_TST_DB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzurePostgreSql",
+				"version": "2.0",
+				"typeProperties": {
+					"server": "[parameters('CH_TST_DB_properties_typeProperties_server')]",
+					"port": "5432",
+					"database": "[parameters('CH_TST_DB_properties_typeProperties_database')]",
+					"sslMode": 2,
+					"authenticationType": "SystemAssignedManagedIdentity"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_ACCOUNT_GRP_FIN_STAT')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -470,7 +445,7 @@
 						"type": "Script",
 						"dependsOn": [
 							{
-								"activity": "Load_Scoring_Group",
+								"activity": "truncate_account_group",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -485,14 +460,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "INSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  s.scoring_group_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nJOIN ch_fss.share_account sa ON t.share_id = sa.share_id\nJOIN ch_fss.scoring_group s ON sa.account_id = s.account_id\nWHERE t.transaction_date >= '2020-01-01'::date\n  AND t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY s.scoring_group_id, date, financial_stat_type_code_id"
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  s.scoring_group_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nJOIN ch_fss.share_account sa ON t.share_id = sa.share_id\nJOIN ch_fss.scoring_group s ON sa.account_id = s.account_id\nWHERE t.transaction_date >= ''',\npipeline().parameters.start_date,\n'''\nAND t.transaction_date < ''',\npipeline().parameters.end_date,\n'''\nGROUP BY s.scoring_group_id, date, financial_stat_type_code_id;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -518,14 +496,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "INSERT INTO  ch_fss.account_group_financial_stat(scoring_group_id, date, value,financial_stat_type_code_id,created_date, created_by)\nSELECT\n    sg.scoring_group_id,\n    agg.date,\n    agg.total_value,\n    4,\n    NOW() AS created_date,\n  'system' AS created_by\nFROM\n(\n    select sa.account_id, sfs.date, sum(sfs.value) as total_value\n    from ch_fss.share_financial_stat sfs\n    join ch_fss.share_account sa on sa.share_id = sfs.share_id\n    where sfs.financial_stat_type_code_id = 4\n    group by sa.account_id, sfs.date\n) agg\nJOIN  ch_fss.scoring_group sg ON sg.account_id = agg.account_id\n "
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.account_group_financial_stat(scoring_group_id, date, value, financial_stat_type_code_id, created_date, created_by)\nSELECT\n    sg.scoring_group_id,\n    agg.date,\n    agg.total_value,\n    4,\n    NOW() AS created_date,\n    ''system'' AS created_by\nFROM\n(\n    SELECT sa.account_id, sfs.date, SUM(sfs.value) AS total_value\n    FROM ch_fss.share_financial_stat sfs\n    JOIN ch_fss.share_account sa ON sa.share_id = sfs.share_id\n    WHERE sfs.\"date\" >= ''',\n    pipeline().parameters.start_date,\n    '''\n    AND sfs.\"date\" < ''',\n    pipeline().parameters.end_date,\n    '''\n    AND sfs.financial_stat_type_code_id = 4\n    GROUP BY sa.account_id, sfs.date\n) agg\nJOIN ch_fss.scoring_group sg ON sg.account_id = agg.account_id;'\n)\n ",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -551,14 +532,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "INSERT INTO ch_fss.account_group_financial_stat\r\n(\r\n   scoring_group_id,\r\n    financial_stat_type_code_id,\r\n    date,\r\n    value\r\n)\r\nWITH date_series AS (\r\n    SELECT generate_series::date AS dt\r\n    FROM generate_series(\r\n        '2020-01-01'::date,\r\n        CURRENT_DATE - INTERVAL '1 day',\r\n        INTERVAL '1 day'\r\n    )\r\n),\r\navg_values AS (\r\n    SELECT\r\n        sfs.scoring_group_id,\r\n        sfs.financial_stat_type_code_id,\r\n        ds.dt AS date,\r\n        SUM(sfs.value)/30 AS avg_value\r\n    FROM ch_fss.account_group_financial_stat sfs \r\n    CROSS JOIN date_series ds\r\n    WHERE sfs.financial_stat_type_code_id IN (1, 2, 3, 4)\r\n      AND sfs.date BETWEEN ds.dt - INTERVAL '29 days' AND ds.dt  -- last 30 days including the day\r\n    GROUP BY sfs.scoring_group_id, sfs.financial_stat_type_code_id, ds.dt\r\n),\r\nmapped_avg AS (\r\n    SELECT\r\n        scoring_group_id,\r\n        CASE financial_stat_type_code_id\r\n            WHEN 1 THEN 5\r\n            WHEN 2 THEN 6\r\n            WHEN 3 THEN 7\r\n            WHEN 4 THEN 8\r\n        END AS financial_stat_type_code_id,\r\n        date,\r\n        avg_value\r\n    FROM avg_values\r\n)\r\nSELECT\r\n    scoring_group_id,\r\n    financial_stat_type_code_id,\r\n    date,\r\n    avg_value AS value\r\nFROM mapped_avg\r\nWHERE avg_value IS NOT NULL;\r\n"
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.account_group_financial_stat\n(\n   scoring_group_id,\n   financial_stat_type_code_id,\n   date,\n   value\n)\nWITH date_series AS (\n  SELECT generate_series::date AS dt\n  FROM generate_series(''',\npipeline().parameters.start_date,\n'''::date, ''',\npipeline().parameters.end_date,\n'''::date - interval ''1 day'', interval ''1 day'')\n),\navg_values AS (\n    SELECT\n        sfs.scoring_group_id,\n        sfs.financial_stat_type_code_id,\n        ds.dt AS date,\n        SUM(sfs.value)/30 AS avg_value\n    FROM ch_fss.account_group_financial_stat sfs \n    CROSS JOIN date_series ds\n    WHERE sfs.financial_stat_type_code_id IN (1, 2, 3, 4)\n      AND sfs.date BETWEEN ds.dt - INTERVAL ''29 days'' AND ds.dt  -- last 30 days including the day\n    GROUP BY sfs.scoring_group_id, sfs.financial_stat_type_code_id, ds.dt\n),\nmapped_avg AS (\n    SELECT\n        scoring_group_id,\n        CASE financial_stat_type_code_id\n            WHEN 1 THEN 5\n            WHEN 2 THEN 6\n            WHEN 3 THEN 7\n            WHEN 4 THEN 8\n        END AS financial_stat_type_code_id,\n        date,\n        avg_value\n    FROM avg_values\n)\nSELECT\n    scoring_group_id,\n    financial_stat_type_code_id,\n    date,\n    avg_value AS value\nFROM mapped_avg\nWHERE avg_value IS NOT NULL;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -584,14 +568,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH denominators AS (\r\n  SELECT\r\n    scoring_group_id,\r\n    date,\r\n    SUM(abs(value)) AS denom_sum\r\n  FROM ch_fss.account_group_financial_stat sfs\r\n  WHERE financial_stat_type_code_id IN (6, 7)\r\n  GROUP BY scoring_group_id, date\r\n),\r\nnumerators AS (\r\n  SELECT\r\n    scoring_group_id,\r\n    date,\r\n    value::numeric AS numerator\r\n  FROM ch_fss.account_group_financial_stat sfs\r\n  WHERE financial_stat_type_code_id = 8\r\n),\r\nvals AS (\r\n  SELECT\r\n    n.scoring_group_id,\r\n    n.date,\r\n    n.numerator,\r\n    d.denom_sum,\r\n    CASE \r\n    WHEN d.denom_sum = 0 THEN NULL\r\n      ELSE n.numerator / d.denom_sum\r\n    END AS ratio\r\n  FROM numerators n\r\n  JOIN denominators d\r\n    ON n.scoring_group_id = d.scoring_group_id\r\n   AND n.date = d.date\r\n)\r\nINSERT INTO ch_fss.account_group_financial_stat (\r\n  scoring_group_id,\r\n  financial_stat_type_code_id,\r\n  date,\r\n  value\r\n)\r\nSELECT \r\n  scoring_group_id,\r\n  9,\r\n  date,\r\n  ratio\r\nFROM vals"
+									"text": {
+										"value": "@concat(\n'WITH denominators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n pipeline().parameters.start_date,\n  ''' \n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\nnumerators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id = 8\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat (\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  9,\n  date,\n  ratio\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -617,14 +604,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH denominators AS (\n  SELECT\n  scoring_group_id,\n  date,\n  SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (6)\n  GROUP BY scoring_group_id, date\n),\nnumerators AS (\n  SELECT\n  scoring_group_id,\n  date,\n  SUM(abs(value))::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (7,8)\n  GROUP BY scoring_group_id, date\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  10,\n  date,\n  ratio\nFROM vals"
+									"text": {
+										"value": "@concat(\n'WITH denominators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (6)\n  GROUP BY scoring_group_id, date\n),\nnumerators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(\n      CASE \n        WHEN financial_stat_type_code_id = 7 THEN abs(value)\n        WHEN financial_stat_type_code_id = 8 THEN value\n        ELSE 0 -- in case other codes appear\n      END\n    )::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (7, 8)\n  GROUP BY scoring_group_id, date\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  10,\n  date,\n  ratio\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -650,14 +640,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH denominators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n\n),\nnumerators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id = 4\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  11,\n  date,\n  ratio\nFROM vals"
+									"text": {
+										"value": "@concat(\n'WITH denominators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\nnumerators AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id = 4\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  11,\n  date,\n  ratio\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -683,14 +676,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH expenses AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\ndeposits AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS income\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id = 5\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    d.income -  n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN deposits d\n    ON n.scoring_group_id = d.scoring_group_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  12,\n  date,\n  diff*30\nFROM vals"
+									"text": {
+										"value": "@concat(\n'WITH expenses AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\ndeposits AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS income\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\n  pipeline().parameters.start_date,\n  '''\n    AND sfs.\"date\" < ''',\n  pipeline().parameters.end_date,\n  '''\n    AND financial_stat_type_code_id = 5\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    d.income - n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN deposits d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  12,\n  date,\n  diff*30\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -716,47 +712,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "WITH expenses AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(ABS(value))*30 AS total_expense\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\nbalances AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS balance\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE financial_stat_type_code_id = 8\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    d.balance -  n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN balances d\n    ON n.scoring_group_id = d.scoring_group_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  13,\n  date,\n  diff\nFROM vals\n"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "Load_Scoring_Group",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "truncate_account_group",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "insert into ch_fss.scoring_group(\ngroup_type_code_id,\naccount_id,\ncreated_by,\ncreated_date,\nupdated_by,\nupdated_date)\nselect  \n1,sa.account_id,'admin', now(), 'admin',now()\nfrom ch_fss.member_account sa\nleft join ch_fss.scoring_group sg\non sa.account_id = sg.account_id\nwhere sg.account_id is null \n"
+									"text": {
+										"value": "@concat(\n'WITH expenses AS (\n  SELECT\n    scoring_group_id,\n    date,\n    SUM(ABS(value)) * 30 AS total_expense\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\npipeline().parameters.start_date,\n'''\n    AND sfs.\"date\" < ''',\npipeline().parameters.end_date,\n'''\n    AND financial_stat_type_code_id IN (6, 7)\n  GROUP BY scoring_group_id, date\n),\nbalances AS (\n  SELECT\n    scoring_group_id,\n    date,\n    value::numeric AS balance\n  FROM ch_fss.account_group_financial_stat sfs\n  WHERE sfs.\"date\" >= ''',\npipeline().parameters.start_date,\n'''\n    AND sfs.\"date\" < ''',\npipeline().parameters.end_date,\n'''\n    AND financial_stat_type_code_id = 8\n),\nvals AS (\n  SELECT\n    n.scoring_group_id,\n    n.date,\n    d.balance - n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN balances d\n    ON n.scoring_group_id = d.scoring_group_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.account_group_financial_stat(\n  scoring_group_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  scoring_group_id,\n  13,\n  date,\n  diff\nFROM vals;'\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -765,8 +731,6 @@
 					{
 						"name": "truncate_account_group",
 						"type": "Script",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -777,14 +741,17 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "TRUNCATE TABLE ch_fss.account_group_financial_stat CASCADE;"
+									"text": {
+										"value": "@concat(\r\n'DELETE FROM ch_fss.account_group_financial_stat\r\nWHERE date >= ''',\r\npipeline().parameters.start_date,\r\n''' \r\nAND date < ''',\r\npipeline().parameters.end_date,\r\n''';'\r\n)",
+										"type": "Expression"
+									}
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -793,293 +760,29 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"start_date": {
+						"type": "string",
+						"defaultValue": "@item().start_date"
+					},
+					"end_date": {
+						"type": "string",
+						"defaultValue": "@item().end_date"
+					}
 				},
 				"folder": {
-					"name": "Ch_environment"
+					"name": "FSS_CALCULATION_PL"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-12-07T13:27:50Z"
+				"lastPublishTime": "2025-11-20T05:27:08Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzurePostgreSql1')]"
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CALCULATION_INITIAL_LOAD')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "avg_multiple_dates",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "ending_bal_cal",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "INSERT INTO ch_fss.share_financial_stat\r\n(\r\n    share_id,\r\n    financial_stat_type_code_id,\r\n    date,\r\n    value\r\n)\r\nWITH date_series AS (\r\n    SELECT generate_series::date AS dt\r\n    FROM generate_series(\r\n        '2020-01-01'::date,\r\n        CURRENT_DATE - INTERVAL '1 day',\r\n        INTERVAL '1 day'\r\n    )\r\n),\r\navg_values AS (\r\n    SELECT\r\n        sfs.share_id,\r\n        sfs.financial_stat_type_code_id,\r\n        ds.dt AS date,\r\n        SUM(sfs.value)/30 AS avg_value\r\n    FROM ch_fss.share_financial_stat sfs \r\n    CROSS JOIN date_series ds\r\n    WHERE sfs.financial_stat_type_code_id IN (1, 2, 3, 4)\r\n      AND sfs.date BETWEEN ds.dt - INTERVAL '29 days' AND ds.dt  -- last 30 days including the day\r\n    GROUP BY sfs.share_id, sfs.financial_stat_type_code_id, ds.dt\r\n),\r\nmapped_avg AS (\r\n    SELECT\r\n        share_id,\r\n        CASE financial_stat_type_code_id\r\n            WHEN 1 THEN 5\r\n            WHEN 2 THEN 6\r\n            WHEN 3 THEN 7\r\n            WHEN 4 THEN 8\r\n        END AS financial_stat_type_code_id,\r\n        date,\r\n        avg_value\r\n    FROM avg_values\r\n)\r\nSELECT\r\n    share_id,\r\n    financial_stat_type_code_id,\r\n    date,\r\n    avg_value AS value\r\nFROM mapped_avg\r\nWHERE avg_value IS NOT NULL;\r\n"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "slack_score_with_fee",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "avg_multiple_dates",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "WITH denominators AS (\r\n  SELECT\r\n    share_id,\r\n    date,\r\n    SUM(abs(value)) AS denom_sum\r\n  FROM ch_fss.share_financial_stat sfs\r\n  WHERE financial_stat_type_code_id IN (5, 7)\r\n  GROUP BY share_id, date\r\n),\r\nnumerators AS (\r\n  SELECT\r\n    share_id,\r\n    date,\r\n    value::numeric AS numerator\r\n  FROM ch_fss.share_financial_stat sfs\r\n  WHERE financial_stat_type_code_id = 8\r\n),\r\nvals AS (\r\n  SELECT\r\n    n.share_id,\r\n    n.date,\r\n    n.numerator,\r\n    d.denom_sum,\r\n    CASE \r\n    WHEN d.denom_sum = 0 THEN NULL\r\n      ELSE n.numerator / d.denom_sum\r\n    END AS ratio\r\n  FROM numerators n\r\n  JOIN denominators d\r\n    ON n.share_id = d.share_id\r\n   AND n.date = d.date\r\n)\r\nINSERT INTO ch_fss.share_financial_stat (\r\n  share_id,\r\n  financial_stat_type_code_id,\r\n  date,\r\n  value\r\n)\r\nSELECT \r\n  share_id,\r\n  9,\r\n  date,\r\n  ratio\r\nFROM vals"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "slack score without fee",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "slack_score_with_fee",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "WITH denominators AS (\n  SELECT\n  share_id,\n  date,\n  SUM(abs(value)) AS denom_sum\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5)\n  GROUP BY share_id, date\n),\nnumerators AS (\n  SELECT\n  share_id,\n  date,\n  SUM(value)::numeric AS numerator\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (7,8)\n  GROUP BY share_id, date\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.share_id = d.share_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat(\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  10,\n  date,\n  ratio\nFROM vals"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "spot slack",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "slack score without fee",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "WITH denominators AS (\n  SELECT\n    share_id,\n    date,\n    SUM(value) AS denom_sum\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5, 7)\n  GROUP BY share_id, date\n\n),\nnumerators AS (\n  SELECT\n    share_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id = 4\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.share_id = d.share_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat(\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  12,\n  date,\n  ratio\nFROM vals"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "flow slack",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "spot slack",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "WITH expenses AS (\n  SELECT\n    share_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5, 7)\n  GROUP BY share_id, date\n),\ndeposits AS (\n  SELECT\n    share_id,\n    date,\n    value::numeric AS income\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id = 6\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    d.income -  n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN deposits d\n    ON n.share_id = d.share_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat(\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  11,\n  date,\n  diff\nFROM vals"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "stock slack",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "flow slack",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "WITH expenses AS (\n  SELECT\n    share_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5, 7)\n  GROUP BY share_id, date\n),\nbalances AS (\n  SELECT\n    share_id,\n    date,\n    value::numeric AS balance\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id = 8\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    d.balance -  n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN balances d\n    ON n.share_id = d.share_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat(\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  13,\n  date,\n  diff\nFROM vals\n"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "transaction_daily",
-						"type": "Script",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;\n"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "ending_bal_cal",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "transaction_daily",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": "INSERT INTO ch_fss.share_financial_stat (\r\n  share_id,\r\n  financial_stat_type_code_id,\r\n  date,\r\n  value\r\n)\r\nSELECT\r\n  sub.share_id,\r\n  4 AS financial_stat_type_code_id,\r\n  sub.transaction_date::date AS date,\r\n  sub.balance AS value\r\nFROM (\r\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\r\n    t.share_id,\r\n    t.transaction_date,\r\n    t.balance,\r\n    t.transaction_id\r\n  FROM ch_fss.\"transaction\" t\r\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\r\n) sub;"
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2025-12-07T13:27:50Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzurePostgreSql1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CALCULATION_INITIAL_LOAD_copy1')]",
+			"name": "[concat(parameters('factoryName'), '/PL_SHARE_FIN_STAT')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1087,7 +790,14 @@
 					{
 						"name": "transaction_daily",
 						"type": "Script",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Truncate_table_financial_stat",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -1097,7 +807,7 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
@@ -1105,7 +815,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_date::date >= todate(@{pipeline().parameters.month_start} :: date)\n  AND t.transaction_date::date < todate(to_timestamp(@{pipeline().parameters.month_start}) :: date)\n  AND t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;",
+										"value": "@concat('\nINSERT INTO fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_date::date >= ''',\n pipeline().parameters.start_date,\n '''::date\n  AND t.transaction_date::date <= ''',\n pipeline().parameters.end_date,\n '''::date\n  AND t.transaction_type_code_id IN (1, 2, 3)\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;\n')",
 										"type": "Expression"
 									}
 								}
@@ -1133,7 +843,7 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
@@ -1141,7 +851,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  sub.share_id,\n  4 AS financial_stat_type_code_id,\n  sub.transaction_date::date AS date,\n  sub.balance AS value\nFROM (\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\n    t.share_id,\n    t.transaction_date,\n    t.balance,\n    t.transaction_id\n  FROM ch_fss.\"transaction\" t\n WHERE t.transaction_date >= @{pipeline().parameters.month_start}::date\n  AND t.transaction_date < @{pipeline().parameters.month_start}::date\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\n) sub;",
+										"value": "@concat(\n'INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  sub.share_id,\n  4 AS financial_stat_type_code_id,\n  sub.transaction_date::date AS date,\n  sub.balance AS value\nFROM (\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\n    t.share_id,\n    t.transaction_date,\n    t.balance,\n    t.transaction_id\n  FROM ch_fss.\"transaction\" t\n  WHERE t.transaction_date >= ''',\n  pipeline().parameters.start_date,\n  ''' \n  and t.transaction_date  < ''',\n  pipeline().parameters.end_date,\n  '''\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\n) sub;'\n)",
 										"type": "Expression"
 									}
 								}
@@ -1150,7 +860,79 @@
 						}
 					},
 					{
-						"name": "avg_multiple_dates",
+						"name": "stg_ending_bal",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "truncate_stg_table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "CH_FSS_Postgres_sql",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat(\n'WITH date_range AS (\n  SELECT generate_series::date AS dt\n  FROM generate_series(''',\n  pipeline().parameters.start_date,\n  '''::date, ''',\n  pipeline().parameters.end_date,\n  '''::date - interval ''1 day'', interval ''1 day'')\n),\ngroups AS (\n  SELECT DISTINCT share_id\n  FROM ch_fss.share_account sa\n  WHERE sa.close_date IS NULL\n),\nall_combinations AS (\n  SELECT g.share_id, d.dt AS date\n  FROM groups g CROSS JOIN date_range d\n)\nINSERT INTO fss_stg.stg_missing_share_ending_bal(\n  share_id, \n  date\n) \nSELECT ac.share_id, ac.date\nFROM all_combinations ac\nLEFT JOIN ch_fss.share_financial_stat agfs\n  ON agfs.share_id = ac.share_id\n  AND agfs.date = ac.date\n  AND agfs.financial_stat_type_code_id = 4\nWHERE agfs.financial_stat_id IS NULL;'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "Insert_missing_ending_bal",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "stg_ending_bal",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "CH_FSS_Postgres_sql",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "@concat(\n'INSERT INTO ch_fss.share_financial_stat (\n  value,\n  date,\n  financial_stat_type_code_id,\n  share_id,\n  created_date,\n  created_by\n)\nSELECT\n  prev.value,\n  tm.date,\n  4,\n  tm.share_id,\n  NOW() AS created_date,\n  ''system'' AS created_by\nFROM fss_stg.stg_missing_share_ending_bal tm\nLEFT JOIN LATERAL (\n  SELECT value\n  FROM  ch_fss.share_financial_stat agfs\n  WHERE agfs.share_id = tm.share_id\n    AND agfs.financial_stat_type_code_id = 4\n    AND agfs.date < tm.date\n  ORDER BY date DESC\n  LIMIT 1\n) prev ON true\nAND prev.value IS NOT null;'\n)",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "truncate_stg_table",
 						"type": "Script",
 						"dependsOn": [
 							{
@@ -1169,7 +951,33 @@
 						},
 						"userProperties": [],
 						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
+							"referenceName": "CH_FSS_Postgres_sql",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "TRUNCATE TABLE fss_stg.stg_missing_share_ending_bal CASCADE;"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "Truncate_table_financial_stat",
+						"type": "Script",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "CH_FSS_Postgres_sql",
 							"type": "LinkedServiceReference"
 						},
 						"typeProperties": {
@@ -1177,7 +985,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "INSERT INTO ch_fss.share_financial_stat (\r\n    share_id,\r\n    financial_stat_type_code_id,\r\n    date,\r\n    value\r\n)\r\nWITH date_series AS (\r\n    SELECT generate_series::date AS dt\r\n    FROM generate_series(\r\n       @{pipeline().parameters.month_start}::date,\r\n       @{pipeline().parameters.month_start}::date - INTERVAL '1 day',\r\n        INTERVAL '1 day'\r\n    )\r\n),\r\navg_values AS (\r\n    SELECT\r\n        sfs.share_id,\r\n        sfs.financial_stat_type_code_id,\r\n        ds.dt AS date,\r\n        SUM(sfs.value) / 30 AS avg_value\r\n    FROM ch_fss.share_financial_stat sfs\r\n    CROSS JOIN date_series ds\r\n    WHERE sfs.financial_stat_type_code_id IN (1, 2, 3, 4)\r\n      AND sfs.date BETWEEN ds.dt - INTERVAL '29 days' AND ds.dt\r\n    GROUP BY sfs.share_id, sfs.financial_stat_type_code_id, ds.dt\r\n),\r\nmapped_avg AS (\r\n    SELECT\r\n        share_id,\r\n        CASE financial_stat_type_code_id\r\n            WHEN 1 THEN 5\r\n            WHEN 2 THEN 6\r\n            WHEN 3 THEN 7\r\n            WHEN 4 THEN 8\r\n        END AS financial_stat_type_code_id,\r\n        date,\r\n        avg_value\r\n    FROM avg_values\r\n)\r\nSELECT\r\n    share_id,\r\n    financial_stat_type_code_id,\r\n    date,\r\n    avg_value AS value\r\nFROM mapped_avg\r\nWHERE avg_value IS NOT NULL;",
+										"value": "@concat(\n'DELETE FROM ch_fss.share_financial_stat\nWHERE date >= ''',\npipeline().parameters.start_date,\n''' \nAND date < ''',\npipeline().parameters.end_date,\n''';'\n)",
 										"type": "Expression"
 									}
 								}
@@ -1190,326 +998,843 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"month_start": {
+					"start_date": {
 						"type": "string",
-						"defaultValue": "@item().month_start"
+						"defaultValue": "@item.start_date"
 					},
-					"month_end": {
+					"end_date": {
 						"type": "string",
-						"defaultValue": "@item().month_end"
+						"defaultValue": "@item.end_date"
 					}
 				},
+				"folder": {
+					"name": "FSS_CALCULATION_PL"
+				},
 				"annotations": [],
-				"lastPublishTime": "2025-12-07T13:27:50Z"
+				"lastPublishTime": "2025-11-20T05:27:08Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzurePostgreSql1')]"
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CALCULATION_INITIAL_LOAD_copy2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/Lookupmonthsarray')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "avg_multiple_dates",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "ending_bal_cal",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "INSERT INTO ch_fss.share_financial_stat\n(\n    share_id,\n    financial_stat_type_code_id,\n    date,\n    value\n)\nWITH date_series AS (\n    SELECT generate_series::date AS dt\n    FROM generate_series(\n        @{pipeline().parameters.month_start}::date,\n        @{pipeline().parameters.month_end}::date,\n        INTERVAL '1 day'\n    )\n),\navg_values AS (\n    SELECT\n        sfs.share_id,\n        sfs.financial_stat_type_code_id,\n        ds.dt AS date,\n        SUM(sfs.value)/30 AS avg_value\n    FROM ch_fss.share_financial_stat sfs \n    CROSS JOIN date_series ds\n    WHERE sfs.financial_stat_type_code_id IN (1, 2, 3, 4)\n      AND sfs.date BETWEEN ds.dt - INTERVAL '29 days' AND ds.dt  -- last 30 days including the day\n    GROUP BY sfs.share_id, sfs.financial_stat_type_code_id, ds.dt\n),\nmapped_avg AS (\n    SELECT\n        share_id,\n        CASE financial_stat_type_code_id\n            WHEN 1 THEN 5\n            WHEN 2 THEN 6\n            WHEN 3 THEN 7\n            WHEN 4 THEN 8\n        END AS financial_stat_type_code_id,\n        date,\n        avg_value\n    FROM avg_values\n)\nSELECT\n    share_id,\n    financial_stat_type_code_id,\n    date,\n    avg_value AS value\nFROM mapped_avg\nWHERE avg_value IS NOT NULL;\n",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "slack_score_with_fee",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "avg_multiple_dates",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "WITH denominators AS (\n  SELECT\n    share_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5, 7)\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date <= @{pipeline().parameters.month_end}::date\n  GROUP BY share_id, date\n),\nnumerators AS (\n  SELECT\n    share_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id = 8\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date <= @{pipeline().parameters.month_end}::date\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.share_id = d.share_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  9,\n  date,\n  ratio\nFROM vals\nWHERE ratio IS NOT NULL;",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "slack score without fee",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "slack_score_with_fee",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "WITH denominators AS (\n  SELECT\n    share_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5)\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date < @{pipeline().parameters.month_end}::date\n  GROUP BY share_id, date\n),\nnumerators AS (\n  SELECT\n    share_id,\n    date,\n    SUM(value)::numeric AS numerator\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (7, 8)\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date < @{pipeline().parameters.month_end}::date\n  GROUP BY share_id, date\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.share_id = d.share_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat(\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  10,\n  date,\n  ratio\nFROM vals\nWHERE ratio IS NOT NULL;",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "spot slack",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "slack score without fee",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "WITH denominators AS (\n  SELECT\n    share_id,\n    date,\n    SUM(value) AS denom_sum\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5, 7)\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date < @{pipeline().parameters.month_end}::date\n  GROUP BY share_id, date\n),\nnumerators AS (\n  SELECT\n    share_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id = 4\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date < @{pipeline().parameters.month_end}::date\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.share_id = d.share_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat(\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  12,\n  date,\n  ratio\nFROM vals\nWHERE ratio IS NOT NULL;",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "flow slack",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "spot slack",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "WITH expenses AS (\n  SELECT\n    share_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5, 7)\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date < @{pipeline().parameters.month_end}::date\n  GROUP BY share_id, date\n),\ndeposits AS (\n  SELECT\n    share_id,\n    date,\n    value::numeric AS income\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id = 6\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date < @{pipeline().parameters.month_end}::date\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    COALESCE(d.income, 0) - n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN deposits d\n    ON n.share_id = d.share_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat(\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  11,\n  date,\n  diff\nFROM vals\nWHERE diff IS NOT NULL;",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "stock slack",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "flow slack",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "WITH expenses AS (\n  SELECT\n    share_id,\n    date,\n    SUM(ABS(value)) AS total_expense\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5, 7)\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date < @{pipeline().parameters.month_end}::date\n  GROUP BY share_id, date\n),\nbalances AS (\n  SELECT\n    share_id,\n    date,\n    value::numeric AS balance\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id = 8\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date < @{pipeline().parameters.month_end}::date\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    COALESCE(d.balance, 0) - n.total_expense AS diff\n  FROM expenses n\n  LEFT JOIN balances d\n    ON n.share_id = d.share_id\n   AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat(\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  13,\n  date,\n  diff\nFROM vals\nWHERE diff IS NOT NULL;\n",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "transaction_daily",
-						"type": "Script",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  t.share_id,\n  t.transaction_type_code_id AS financial_stat_type_code_id,\n  t.transaction_date::date AS date,\n  SUM(t.transaction_amount) AS value\nFROM ch_fss.\"transaction\" t\nWHERE t.transaction_type_code_id IN (1, 2, 3)\n  AND t.transaction_date >= @{pipeline().parameters.month_start}::date\n  AND t.transaction_date <= @{pipeline().parameters.month_end}::date\nGROUP BY t.share_id, t.transaction_date::date, t.transaction_type_code_id;\n\n--ending balance\n\nINSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  sub.share_id,\n  4 AS financial_stat_type_code_id,\n  sub.transaction_date::date AS date,\n  sub.balance AS value\nFROM (\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\n    t.share_id,\n    t.transaction_date,\n    t.balance,\n    t.transaction_id\n  FROM ch_fss.\"transaction\" t\n  WHERE t.transaction_date >= @{pipeline().parameters.month_start}::date\n    AND t.transaction_date <= @{pipeline().parameters.month_end}::date\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\n) sub;\n\n--avg balance for multiple dates\nINSERT INTO ch_fss.share_financial_stat\n(\n    share_id,\n    financial_stat_type_code_id,\n    date,\n    value\n)\nWITH date_series AS (\n    SELECT generate_series::date AS dt\n    FROM generate_series(\n        @{pipeline().parameters.month_start}::date,\n        @{pipeline().parameters.month_end}::date,\n        INTERVAL '1 day'\n    )\n),\navg_values AS (\n    SELECT\n        sfs.share_id,\n        sfs.financial_stat_type_code_id,\n        ds.dt AS date,\n        SUM(sfs.value)/30 AS avg_value\n    FROM ch_fss.share_financial_stat sfs \n    CROSS JOIN date_series ds\n    WHERE sfs.financial_stat_type_code_id IN (1, 2, 3, 4)\n      AND sfs.date BETWEEN ds.dt - INTERVAL '29 days' AND ds.dt  -- last 30 days including the day\n    GROUP BY sfs.share_id, sfs.financial_stat_type_code_id, ds.dt\n),\nmapped_avg AS (\n    SELECT\n        share_id,\n        CASE financial_stat_type_code_id\n            WHEN 1 THEN 5\n            WHEN 2 THEN 6\n            WHEN 3 THEN 7\n            WHEN 4 THEN 8\n        END AS financial_stat_type_code_id,\n        date,\n        avg_value\n    FROM avg_values\n)\nSELECT\n    share_id,\n    financial_stat_type_code_id,\n    date,\n    avg_value AS value\nFROM mapped_avg\nWHERE avg_value IS NOT NULL;\n\n---slack_score_with_fee\n\nWITH denominators AS (\n  SELECT\n    share_id,\n    date,\n    SUM(abs(value)) AS denom_sum\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id IN (5, 7)\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date <= @{pipeline().parameters.month_end}::date\n  GROUP BY share_id, date\n),\nnumerators AS (\n  SELECT\n    share_id,\n    date,\n    value::numeric AS numerator\n  FROM ch_fss.share_financial_stat sfs\n  WHERE financial_stat_type_code_id = 8\n    AND date >= @{pipeline().parameters.month_start}::date\n    AND date <= @{pipeline().parameters.month_end}::date\n),\nvals AS (\n  SELECT\n    n.share_id,\n    n.date,\n    n.numerator,\n    d.denom_sum,\n    CASE \n      WHEN d.denom_sum = 0 THEN NULL\n      ELSE n.numerator / d.denom_sum\n    END AS ratio\n  FROM numerators n\n  JOIN denominators d\n    ON n.share_id = d.share_id\n    AND n.date = d.date\n)\nINSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT \n  share_id,\n  9,\n  date,\n  ratio\nFROM vals\nWHERE ratio IS NOT NULL;\n",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					},
-					{
-						"name": "ending_bal_cal",
-						"type": "Script",
-						"dependsOn": [
-							{
-								"activity": "transaction_daily",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"linkedServiceName": {
-							"referenceName": "AzurePostgreSql1",
-							"type": "LinkedServiceReference"
-						},
-						"typeProperties": {
-							"scripts": [
-								{
-									"type": "Query",
-									"text": {
-										"value": "INSERT INTO ch_fss.share_financial_stat (\n  share_id,\n  financial_stat_type_code_id,\n  date,\n  value\n)\nSELECT\n  sub.share_id,\n  4 AS financial_stat_type_code_id,\n  sub.transaction_date::date AS date,\n  sub.balance AS value\nFROM (\n  SELECT DISTINCT ON (t.share_id, t.transaction_date::date)\n    t.share_id,\n    t.transaction_date,\n    t.balance,\n    t.transaction_id\n  FROM ch_fss.\"transaction\" t\n  WHERE t.transaction_date >= @{pipeline().parameters.month_start}::date\n    AND t.transaction_date <= @{pipeline().parameters.month_end}::date\n  ORDER BY t.share_id, t.transaction_date::date, t.transaction_id DESC\n) sub;",
-										"type": "Expression"
-									}
-								}
-							],
-							"scriptBlockExecutionTimeout": "02:00:00"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
+				"linkedServiceName": {
+					"referenceName": "CH_FSS_Postgres_sql",
+					"type": "LinkedServiceReference"
 				},
-				"parameters": {
-					"month_start": {
-						"type": "array"
-					},
-					"month_end": {
-						"type": "string"
-					}
+				"folder": {
+					"name": "DS_CALCULATION"
 				},
 				"annotations": [],
-				"lastPublishTime": "2025-12-07T13:27:50Z"
+				"type": "AzurePostgreSqlTable",
+				"schema": [
+					{
+						"name": "process_name",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "last_processed_date",
+						"type": "timestamp without time zone",
+						"precision": 0,
+						"scale": 0
+					}
+				],
+				"typeProperties": {}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzurePostgreSql1')]"
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/member_account_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CH_FSS_BLOB",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DS_MEMBERACCOUNT"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "DEV_PWC_Extract_Account_2025_12_3.csv",
+						"folderPath": "InitialData",
+						"container": "fss"
+					},
+					"columnDelimiter": "|",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "PWC_Key",
+						"type": "String"
+					},
+					{
+						"name": "TYPE",
+						"type": "String"
+					},
+					{
+						"name": "LASTFMDATE",
+						"type": "String"
+					},
+					{
+						"name": "OPENDATE",
+						"type": "String"
+					},
+					{
+						"name": "CLOSEDATE",
+						"type": "String"
+					},
+					{
+						"name": "BRANCH",
+						"type": "String"
+					},
+					{
+						"name": "RESTRICTACCESS",
+						"type": "String"
+					},
+					{
+						"name": "REFERENCE",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE1",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE2",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE3",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE4",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE5",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE6",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE7",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE8",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE9",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE10",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE11",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE12",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE13",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE14",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE15",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE16",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE17",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE18",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE19",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGCODE20",
+						"type": "String"
+					},
+					{
+						"name": "PAYMENTHISTORY1",
+						"type": "String"
+					},
+					{
+						"name": "PAYMENTHISTORY2",
+						"type": "String"
+					},
+					{
+						"name": "PAYMENTHISTORY3",
+						"type": "String"
+					},
+					{
+						"name": "PAYMENTHISTORY4",
+						"type": "String"
+					},
+					{
+						"name": "PAYMENTHISTORY5",
+						"type": "String"
+					},
+					{
+						"name": "PAYMENTHISTORY6",
+						"type": "String"
+					},
+					{
+						"name": "MEMBERSTATUS",
+						"type": "String"
+					},
+					{
+						"name": "CORRESPONDDATE",
+						"type": "String"
+					},
+					{
+						"name": "PROXYDATE",
+						"type": "String"
+					},
+					{
+						"name": "HEADOFHOUSEHOLD",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION1",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION2",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION3",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION4",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION5",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION6",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION7",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION8",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION9",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION10",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION11",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION12",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION13",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION14",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION15",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION16",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION17",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION18",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION19",
+						"type": "String"
+					},
+					{
+						"name": "WARNINGEXPIRATION20",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT1",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT2",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT3",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT4",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT5",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT6",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT7",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT8",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT9",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT10",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT11",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT12",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT13",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT14",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT15",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT16",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT17",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT18",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT19",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT20",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT21",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT22",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT23",
+						"type": "String"
+					},
+					{
+						"name": "NSFMONTHLYCOUNT24",
+						"type": "String"
+					},
+					{
+						"name": "NSFTODAY",
+						"type": "String"
+					},
+					{
+						"name": "MEMBERGROUP",
+						"type": "String"
+					},
+					{
+						"name": "COMMERCIALCODE",
+						"type": "String"
+					},
+					{
+						"name": "FMLASTPURGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "STATEREPORTING",
+						"type": "String"
+					},
+					{
+						"name": "HOUSEHOLDACCOUNT",
+						"type": "String"
+					},
+					{
+						"name": "HOUSEHOLDSTATEMENT",
+						"type": "String"
+					},
+					{
+						"name": "FROZENMODE",
+						"type": "String"
+					},
+					{
+						"name": "INVALIDATTEMPTCOUNT",
+						"type": "String"
+					},
+					{
+						"name": "INVALIDATTEMPTDATE",
+						"type": "String"
+					},
+					{
+						"name": "INVALIDATTEMPTTIME",
+						"type": "String"
+					},
+					{
+						"name": "STATEMENTMAILCODE",
+						"type": "String"
+					},
+					{
+						"name": "RELATIONSHIPCODE",
+						"type": "String"
+					},
+					{
+						"name": "RELATIONSHIPOVERRIDE",
+						"type": "String"
+					},
+					{
+						"name": "RELATIONSHIPOVERRIDEEFFDATE",
+						"type": "String"
+					},
+					{
+						"name": "RELATIONSHIPOVERRIDEEXPDATE",
+						"type": "String"
+					},
+					{
+						"name": "KRHOLDBASEAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "KRTOTALAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "KRTOTALDATE",
+						"type": "String"
+					},
+					{
+						"name": "ESTMTNOTIFY",
+						"type": "String"
+					},
+					{
+						"name": "ESTMTENABLE",
+						"type": "String"
+					},
+					{
+						"name": "CRTOTALAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "CDTOTALAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "FRCRTOTALAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "FRCDTOTALAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "USERCHAR1",
+						"type": "String"
+					},
+					{
+						"name": "USERCHAR2",
+						"type": "String"
+					},
+					{
+						"name": "USERCHAR3",
+						"type": "String"
+					},
+					{
+						"name": "USERCHAR4",
+						"type": "String"
+					},
+					{
+						"name": "USERAMOUNT1",
+						"type": "String"
+					},
+					{
+						"name": "USERAMOUNT2",
+						"type": "String"
+					},
+					{
+						"name": "USERDATE1",
+						"type": "String"
+					},
+					{
+						"name": "USERDATE2",
+						"type": "String"
+					},
+					{
+						"name": "ENABLEFLOAT",
+						"type": "String"
+					},
+					{
+						"name": "FRCRUNITS",
+						"type": "String"
+					},
+					{
+						"name": "FRCDUNITS",
+						"type": "String"
+					},
+					{
+						"name": "PRGDRECACTIVITYDT",
+						"type": "String"
+					},
+					{
+						"name": "RECORDCHANGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "CAPPEDFEESCOUNTCAP",
+						"type": "String"
+					},
+					{
+						"name": "CAPPEDFEESAMOUNTCAP",
+						"type": "String"
+					},
+					{
+						"name": "CREATEDBYUSER",
+						"type": "String"
+					},
+					{
+						"name": "CREATEDATBRANCH",
+						"type": "String"
+					},
+					{
+						"name": "WRTOTALAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "WDTOTALAMOUNT",
+						"type": "String"
+					},
+					{
+						"name": "NONREGCCCHECKHOLDBASEAMT",
+						"type": "String"
+					},
+					{
+						"name": "NONREGCCCHECKTOTALAMT",
+						"type": "String"
+					},
+					{
+						"name": "LIMITUSAGEDATE",
+						"type": "String"
+					},
+					{
+						"name": "COUNTLIMIT1",
+						"type": "String"
+					},
+					{
+						"name": "COUNTLIMIT2",
+						"type": "String"
+					},
+					{
+						"name": "COUNTLIMIT3",
+						"type": "String"
+					},
+					{
+						"name": "COUNTLIMIT4",
+						"type": "String"
+					},
+					{
+						"name": "COUNTLIMIT5",
+						"type": "String"
+					},
+					{
+						"name": "COUNTLIMIT6",
+						"type": "String"
+					},
+					{
+						"name": "LIMITCOUNT1",
+						"type": "String"
+					},
+					{
+						"name": "LIMITCOUNT2",
+						"type": "String"
+					},
+					{
+						"name": "LIMITCOUNT3",
+						"type": "String"
+					},
+					{
+						"name": "LIMITCOUNT4",
+						"type": "String"
+					},
+					{
+						"name": "LIMITCOUNT5",
+						"type": "String"
+					},
+					{
+						"name": "LIMITCOUNT6",
+						"type": "String"
+					},
+					{
+						"name": "LIMIT1",
+						"type": "String"
+					},
+					{
+						"name": "LIMIT2",
+						"type": "String"
+					},
+					{
+						"name": "LIMIT3",
+						"type": "String"
+					},
+					{
+						"name": "LIMIT4",
+						"type": "String"
+					},
+					{
+						"name": "LIMIT5",
+						"type": "String"
+					},
+					{
+						"name": "LIMIT6",
+						"type": "String"
+					},
+					{
+						"name": "LIMITAMOUNT1",
+						"type": "String"
+					},
+					{
+						"name": "LIMITAMOUNT2",
+						"type": "String"
+					},
+					{
+						"name": "LIMITAMOUNT3",
+						"type": "String"
+					},
+					{
+						"name": "LIMITAMOUNT4",
+						"type": "String"
+					},
+					{
+						"name": "LIMITAMOUNT5",
+						"type": "String"
+					},
+					{
+						"name": "LIMITAMOUNT6",
+						"type": "String"
+					},
+					{
+						"name": "PERITEMLIMIT1",
+						"type": "String"
+					},
+					{
+						"name": "PERITEMLIMIT2",
+						"type": "String"
+					},
+					{
+						"name": "PERITEMLIMIT3",
+						"type": "String"
+					},
+					{
+						"name": "PERITEMLIMIT4",
+						"type": "String"
+					},
+					{
+						"name": "PERITEMLIMIT5",
+						"type": "String"
+					},
+					{
+						"name": "PERITEMLIMIT6",
+						"type": "String"
+					},
+					{
+						"name": "VERSIONID",
+						"type": "String"
+					},
+					{
+						"name": "UUID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_BLOB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/member_account_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CH_FSS_Postgres_sql",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DS_MEMBERACCOUNT"
+				},
+				"annotations": [],
+				"type": "AzurePostgreSqlTable",
+				"schema": [
+					{
+						"name": "account_id",
+						"type": "integer",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "open_date",
+						"type": "date",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "close_date",
+						"type": "date",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "branch",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "status",
+						"type": "character",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "household_account_number",
+						"type": "character",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "member_group_name",
+						"type": "character",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "product_id",
+						"type": "integer",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "created_date",
+						"type": "timestamp without time zone",
+						"precision": 6,
+						"scale": 0
+					},
+					{
+						"name": "created_by",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "updated_date",
+						"type": "timestamp without time zone",
+						"precision": 6,
+						"scale": 0
+					},
+					{
+						"name": "updated_by",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "account_type_id",
+						"type": "integer",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "anonymized_member_id",
+						"type": "bigint",
+						"precision": 0,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "ch_fss",
+					"table": "member_account"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]"
 			]
 		}
 	]
