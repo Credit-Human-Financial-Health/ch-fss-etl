@@ -2,7 +2,7 @@
 	"name": "trans_comments_csv",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "CH_FSS_BLOB",
+			"referenceName": "CH_FSS_Blob_Storage",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
