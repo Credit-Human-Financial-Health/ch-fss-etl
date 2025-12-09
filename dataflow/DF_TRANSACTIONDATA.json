@@ -1,5 +1,5 @@
 {
-	"name": "DF_TRANSACTION_DATA",
+	"name": "DF_TRANSACTIONDATA",
 	"properties": {
 		"folder": {
 			"name": "FSS_DATAFLOW"

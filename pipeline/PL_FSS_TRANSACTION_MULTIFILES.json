@@ -241,7 +241,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"dataflow": {
-												"referenceName": "DF_TRANSACTION_DATA",
+												"referenceName": "DF_TRANSACTIONDATA",
 												"type": "DataFlowReference",
 												"datasetParameters": {
 													"TRANSACTIONSOURCE": {
