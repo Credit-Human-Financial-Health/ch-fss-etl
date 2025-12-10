@@ -7,25 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adf-app-fss-tmp-dev-scus-001"
 		},
-		"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
-			"type": "string",
-			"defaultValue": "https://sachappfsstmpdevtest123scus001.blob.core.windows.net/"
-		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://kvappfsstmpdevscus001.vault.azure.net/"
-		},
-		"AzurePostgreSql1_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
-		},
-		"AzurePostgreSql1_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "postgres"
-		},
-		"AzurePostgreSql1_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "sqaladmin"
 		},
 		"CH_FSS_BLOB_properties_typeProperties_serviceEndpoint": {
 			"type": "object",
@@ -68,14 +52,6 @@
 		"CH_FSS_Postgres_sql_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "sqladmin"
-		},
-		"CH_TST_DB_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
-		},
-		"CH_TST_DB_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "postgres"
 		},
 		"AzureDataLakeStorage568_properties_privateLinkResourceId": {
 			"type": "string",
@@ -199,18 +175,6 @@
 					"pe-sachappfsstmpdevscus001_properties_fqdns": {
 						"value": "[parameters('pe-sachappfsstmpdevscus001_properties_fqdns')]"
 					},
-					"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
-						"value": "[parameters('AzureBlobStorage1_properties_typeProperties_serviceEndpoint')]"
-					},
-					"AzurePostgreSql1_properties_typeProperties_server": {
-						"value": "[parameters('AzurePostgreSql1_properties_typeProperties_server')]"
-					},
-					"AzurePostgreSql1_properties_typeProperties_database": {
-						"value": "[parameters('AzurePostgreSql1_properties_typeProperties_database')]"
-					},
-					"AzurePostgreSql1_properties_typeProperties_username": {
-						"value": "[parameters('AzurePostgreSql1_properties_typeProperties_username')]"
-					},
 					"CH_FSS_BLOB_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('CH_FSS_BLOB_properties_typeProperties_serviceEndpoint')]"
 					},
@@ -231,12 +195,6 @@
 					},
 					"CH_FSS_Postgres_sql_properties_typeProperties_username": {
 						"value": "[parameters('CH_FSS_Postgres_sql_properties_typeProperties_username')]"
-					},
-					"CH_TST_DB_properties_typeProperties_server": {
-						"value": "[parameters('CH_TST_DB_properties_typeProperties_server')]"
-					},
-					"CH_TST_DB_properties_typeProperties_database": {
-						"value": "[parameters('CH_TST_DB_properties_typeProperties_database')]"
 					}
 				}
 			},

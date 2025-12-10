@@ -5,20 +5,8 @@
 		"factoryName": {
 			"value": "adf-app-fss-tmp-dev-scus-001"
 		},
-		"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
-			"value": "https://sachappfsstmpdevtest123scus001.blob.core.windows.net/"
-		},
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://kvappfsstmpdevscus001.vault.azure.net/"
-		},
-		"AzurePostgreSql1_properties_typeProperties_server": {
-			"value": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
-		},
-		"AzurePostgreSql1_properties_typeProperties_database": {
-			"value": "postgres"
-		},
-		"AzurePostgreSql1_properties_typeProperties_username": {
-			"value": "sqaladmin"
 		},
 		"CH_FSS_BLOB_properties_typeProperties_serviceEndpoint": {
 			"value": {
@@ -54,12 +42,6 @@
 		},
 		"CH_FSS_Postgres_sql_properties_typeProperties_username": {
 			"value": "sqladmin"
-		},
-		"CH_TST_DB_properties_typeProperties_server": {
-			"value": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
-		},
-		"CH_TST_DB_properties_typeProperties_database": {
-			"value": "postgres"
 		},
 		"AzureDataLakeStorage568_properties_privateLinkResourceId": {
 			"value": "/subscriptions/954e6be0-9b93-4a14-8954-8eeb9fd3b065/resourceGroups/rg-app-fss-tmp-dev-scus-001/providers/Microsoft.Storage/storageAccounts/sachappfsstmpdevscus001"

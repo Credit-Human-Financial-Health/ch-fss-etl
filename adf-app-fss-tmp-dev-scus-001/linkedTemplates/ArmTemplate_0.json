@@ -67,22 +67,6 @@
 				"sachappfsstmpdevscus001.blob.core.windows.net"
 			]
 		},
-		"AzureBlobStorage1_properties_typeProperties_serviceEndpoint": {
-			"type": "string",
-			"defaultValue": "https://sachappfsstmpdevtest123scus001.blob.core.windows.net/"
-		},
-		"AzurePostgreSql1_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
-		},
-		"AzurePostgreSql1_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "postgres"
-		},
-		"AzurePostgreSql1_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "sqaladmin"
-		},
 		"CH_FSS_BLOB_properties_typeProperties_serviceEndpoint": {
 			"type": "object",
 			"defaultValue": {
@@ -124,14 +108,6 @@
 		"CH_FSS_Postgres_sql_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "sqladmin"
-		},
-		"CH_TST_DB_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "psql-app-fss-tmp-dev-scus-001.postgres.database.azure.com"
-		},
-		"CH_TST_DB_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "postgres"
 		}
 	},
 	"variables": {
@@ -147,6 +123,27 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/schedule_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-12-08T11:00:00",
+						"timeZone": "Central Standard Time",
+						"schedule": {}
+					}
 				}
 			},
 			"dependsOn": []
@@ -233,60 +230,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"serviceEndpoint": "[parameters('AzureBlobStorage1_properties_typeProperties_serviceEndpoint')]",
-					"accountKind": "StorageV2"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzurePostgreSql1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzurePostgreSql",
-				"version": "2.0",
-				"typeProperties": {
-					"server": "[parameters('AzurePostgreSql1_properties_typeProperties_server')]",
-					"port": "5432",
-					"database": "[parameters('AzurePostgreSql1_properties_typeProperties_database')]",
-					"sslMode": 2,
-					"username": "[parameters('AzurePostgreSql1_properties_typeProperties_username')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "AzureKeyVault1",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "db-password"
-					},
-					"authenticationType": "Basic"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
 			]
 		},
 		{
@@ -387,30 +330,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CH_TST_DB')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzurePostgreSql",
-				"version": "2.0",
-				"typeProperties": {
-					"server": "[parameters('CH_TST_DB_properties_typeProperties_server')]",
-					"port": "5432",
-					"database": "[parameters('CH_TST_DB_properties_typeProperties_database')]",
-					"sslMode": 2,
-					"authenticationType": "SystemAssignedManagedIdentity"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -2444,6 +2363,181 @@
 					},
 					{
 						"name": "CURRMTHPAYCHGDATE",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Blob_Storage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/member_details_sink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CH_FSS_Postgres_sql",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DS_MEMBERDETAILS"
+				},
+				"annotations": [],
+				"type": "AzurePostgreSqlTable",
+				"schema": [
+					{
+						"name": "member_id",
+						"type": "integer",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "name",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "last_name",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "date_of_birth",
+						"type": "date",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "ssn",
+						"type": "character",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "address",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "city",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "state",
+						"type": "character",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "zip_code",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "phone",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "email",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "branch",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "status",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "start_date",
+						"type": "date",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "created_date",
+						"type": "timestamp without time zone",
+						"precision": 6,
+						"scale": 0
+					},
+					{
+						"name": "created_by",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "updated_date",
+						"type": "timestamp without time zone",
+						"precision": 6,
+						"scale": 0
+					},
+					{
+						"name": "updated_by",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "ch_fss",
+					"table": "member"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Postgres_sql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/member_stories_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CH_FSS_Blob_Storage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DS_MEMBERSTORIES"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "synapsis.csv",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "InitialData",
+						"container": "fss"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Comments",
+						"type": "String"
+					},
+					{
+						"name": "DetailEntryValue",
+						"type": "String"
+					},
+					{
+						"name": "Value",
 						"type": "String"
 					}
 				]
