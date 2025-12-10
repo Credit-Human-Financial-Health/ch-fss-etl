@@ -13,8 +13,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "•\tPROD_PWC_Extract_Name",
-				"folderPath": "InitialData",
+				"fileName": "PWC_Extract_Name_2025_11_5.csv",
+				"folderPath": "PwC_Data",
 				"container": "fss"
 			},
 			"columnDelimiter": "|",
