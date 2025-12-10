@@ -1743,7 +1743,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "CH_FSS_Blob_Storage",
+					"referenceName": "CH_FSS_BLOB",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -1754,7 +1754,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "•\tPROD_PWC_Extract_Name",
+						"fileName": "PROD_PWC_Extract_Name",
 						"folderPath": "InitialData",
 						"container": "fss"
 					},
@@ -2367,7 +2367,7 @@
 				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_Blob_Storage')]"
+				"[concat(variables('factoryId'), '/linkedServices/CH_FSS_BLOB')]"
 			]
 		},
 		{

@@ -135,7 +135,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "•\tPROD_PWC_Extract_Savings",
+						"fileName": "PROD_PWC_Extract_Savings",
 						"folderPath": "InitialData",
 						"container": "fss"
 					},
@@ -1946,8 +1946,6 @@
 					{
 						"name": "watermarktable_intial_insert",
 						"type": "Script",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "start_time",
@@ -1972,7 +1970,7 @@
 							"scripts": [
 								{
 									"type": "Query",
-									"text": "\nINSERT INTO ch_fss.watermark_table (\n    process_name, last_processed_date, created_by, created_date, updated_date, updated_by\n)\nVALUES (\n    'TransactionProcessing',\n    '2020-01-01'::timestamp,\n    'Admin',\n    NOW(),\n    NOW(),\n    'Admin'\n);"
+									"text": "\nINSERT INTO ch_fss.watermark_table (\n    process_name, last_processed_date, created_by, created_date, updated_date, updated_by\n)\nVALUES (\n    'TransactionProcessing',\n    '2024-12-01'::timestamp,\n    'Admin',\n    NOW(),\n    NOW(),\n    'Admin'\n);"
 								}
 							],
 							"scriptBlockExecutionTimeout": "02:00:00"
@@ -2373,7 +2371,7 @@
 					],
 					"scriptLines": [
 						"source(output(",
-						"          PWC_Key as integer,",
+						"          PWC_Key as string,",
 						"          ORDINAL as string,",
 						"          TYPE as string,",
 						"          SUBTYPE as string,",
@@ -3838,7 +3836,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('MEMBERDETAILS').status, '''', ',',\n  if(\n    equals(activity('MEMBERDETAILS').status, 'Failed'),\n    concat('''', replace(activity('MEMBERDETAILS').error.message.details, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
+										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('MEMBERDETAILS').status, '''', ',',\n  if(\n    equals(activity('MEMBERDETAILS').status, 'Failed'),\n    concat('''', replace(activity('MEMBERDETAILS').error.message, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
 										"type": "Expression"
 									}
 								}
