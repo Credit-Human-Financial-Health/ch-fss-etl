@@ -135,7 +135,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "DEV_PWC_Extract_Savings_2025_12_3.csv",
+						"fileName": "•\tPROD_PWC_Extract_Savings",
 						"folderPath": "InitialData",
 						"container": "fss"
 					},
@@ -1500,8 +1500,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "PWC_Trans_2025_10_31.csv",
-						"folderPath": "PwC_Data",
+						"fileName": "PROD_PWC_Trans_2024_2025_Sample",
+						"folderPath": "InitialData",
 						"container": "fss"
 					},
 					"columnDelimiter": "|",
@@ -1830,7 +1830,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "INSERT INTO ch_fss.watermark_table (process_name, last_processed_date,created_by,created_date, updated_date, updated_by)\nVALUES (\n    'activity('LookupMonthsArray').output.value',\n    TO_TIMESTAMP('@{variables('LatestProcessedEndDate')}', 'YYYY-MM-DD') + INTERVAL '1 day',\n    'Admin',\n    NOW(),\n    NOW(),\n    'Admin'\n);",
+													"value": "INSERT INTO ch_fss.watermark_table (process_name, last_processed_date,created_by,created_date, updated_date, updated_by)\nVALUES (\n    'Transactionprocessing',\n    TO_TIMESTAMP('@{variables('LatestProcessedEndDate')}', 'YYYY-MM-DD') + INTERVAL '1 day',\n    'Admin',\n    NOW(),\n    NOW(),\n    'Admin'\n);",
 													"type": "Expression"
 												}
 											}
@@ -1931,7 +1931,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzurePostgreSqlSource",
-								"query": "\nSELECT\n  gs.dt::date AS start_date,\n  CASE\n    WHEN (gs.dt::date + INTERVAL '1 month')::date > CURRENT_DATE\n      THEN CURRENT_DATE\n    ELSE (gs.dt::date + INTERVAL '1 month')::date\n  END AS end_date\nFROM (\n  SELECT\n    date_trunc('month', last_processed_date)::date AS start_date,\n    date_trunc('month', CURRENT_DATE)::date AS current_month_start\n  FROM ch_fss.watermark_table\n  WHERE process_name = 'TransactionProcessing'\n  ORDER BY created_date DESC\n  LIMIT 1\n) AS p\nCROSS JOIN LATERAL generate_series(\n  p.start_date::timestamp,\n  p.current_month_start::timestamp,\n  INTERVAL '1 month'\n) AS gs(dt)\nORDER BY start_date\n",
+								"query": "SELECT\n  gs.dt::date AS start_date,\n  CASE\n    WHEN (gs.dt::date + INTERVAL '1 month')::date > CURRENT_DATE\n      THEN CURRENT_DATE\n    ELSE (gs.dt::date + INTERVAL '1 month')::date\n  END AS end_date\nFROM (\n  SELECT\n    date_trunc('month', last_processed_date)::date AS start_date,\n    date_trunc('month', CURRENT_DATE)::date AS current_month_start\n  FROM ch_fss.watermark_table\n  WHERE process_name = 'TransactionProcessing'\n  ORDER BY created_date DESC\n  LIMIT 1\n) AS p\nCROSS JOIN LATERAL generate_series(\n  p.start_date::timestamp,\n  p.current_month_start::timestamp,\n  INTERVAL '1 month'\n) AS gs(dt)\nORDER BY start_date\n",
 								"partitionOption": "None",
 								"queryTimeout": "02:00:00"
 							},
@@ -2329,7 +2329,8 @@
 						"          branch = BRANCH,",
 						"          status = MEMBERSTATUS,",
 						"          account_type_id = TYPE,",
-						"          product_id",
+						"          product_id,",
+						"          anonymized_member_id = PWC_Key",
 						"     ),",
 						"     partitionBy('hash', 1)) ~> MEMBERSINKCSV"
 					]
