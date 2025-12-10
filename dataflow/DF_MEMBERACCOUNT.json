@@ -236,7 +236,8 @@
 				"          branch = BRANCH,",
 				"          status = MEMBERSTATUS,",
 				"          account_type_id = TYPE,",
-				"          product_id",
+				"          product_id,",
+				"          anonymized_member_id = PWC_Key",
 				"     ),",
 				"     partitionBy('hash', 1)) ~> MEMBERSINKCSV"
 			]
