@@ -115,3 +115,7 @@ jobs:
           dataFactoryName: adf-app-fss-tmp-prod-scus-001  
           armTemplateFile: ARMTemplateForFactory.json
           armTemplateParametersFile: ARMTemplateParametersForFactory.json
+          additionalParameters: >
+            AzureKeyVault1_properties_typeProperties_baseUrl=${{ vars.AzureKeyVault1_BASEURL }}
+            CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint=${{ vars.CH_FSS_Blob_Storage_SERVICEPOINT }} 
+            CH_FSS_Postgres_sql_properties_typeProperties_server=${{ vars.CH_FSS_Postgres_sql_SERVER }}
