@@ -87,6 +87,10 @@ jobs:
           dataFactoryName: ch-test
           armTemplateFile: ARMTemplateForFactory.json
           armTemplateParametersFile: ARMTemplateParametersForFactory.json
+          additionalParameters: >
+            AzureKeyVault1_properties_typeProperties_baseUrl=${{ vars.AZUREKEYVAULT1_BASEURL }}
+            CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint=${{ vars.CH_FSS_BLOB_STORAGE_SERVICEPOINT }} 
+            CH_FSS_Postgres_sql_properties_typeProperties_server=${{ vars.CH_FSS_POSTGRES_SQL_SERVER }}
           
   Prod-release:
     if: ${{ inputs.deploy_env == 'Prod' || inputs.deploy_env == 'All' }}
@@ -116,6 +120,6 @@ jobs:
           armTemplateFile: ARMTemplateForFactory.json
           armTemplateParametersFile: ARMTemplateParametersForFactory.json
           additionalParameters: >
-            AzureKeyVault1_properties_typeProperties_baseUrl=${{ vars.AzureKeyVault1_BASEURL }}
-            CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint=${{ vars.CH_FSS_Blob_Storage_SERVICEPOINT }} 
-            CH_FSS_Postgres_sql_properties_typeProperties_server=${{ vars.CH_FSS_Postgres_sql_SERVER }}
+            AzureKeyVault1_properties_typeProperties_baseUrl=${{ vars.AZUREKEYVAULT1_BASEURL }}
+            CH_FSS_Blob_Storage_properties_typeProperties_serviceEndpoint=${{ vars.CH_FSS_BLOB_STORAGE_SERVICEPOINT }} 
+            CH_FSS_Postgres_sql_properties_typeProperties_server=${{ vars.CH_FSS_POSTGRES_SQL_SERVER }}
