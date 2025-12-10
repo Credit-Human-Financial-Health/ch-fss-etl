@@ -1,14 +1,20 @@
 name: Build & Deploy ADF (ARM)
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-
 permissions:
-  id-token: write   # needed for OIDC with azure/login
+  actions: read
+  id-token: write
   contents: read
 
+on:
+  workflow_dispatch:
+    inputs:
+        deploy_env:
+          description: 'Deploy env'
+          type: choice
+          options:
+            - Dev
+            - Prod
+          default: Dev
 jobs:
   build:
     runs-on: ubuntu-latest
