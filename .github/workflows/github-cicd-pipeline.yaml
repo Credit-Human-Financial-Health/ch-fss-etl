@@ -16,6 +16,7 @@ on:
             - Prod
             - All
           default: Dev
+          
 jobs:
   build:
     runs-on: ubuntu-latest
