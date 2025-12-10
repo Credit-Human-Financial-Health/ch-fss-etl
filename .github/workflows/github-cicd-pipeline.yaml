@@ -108,6 +108,6 @@ jobs:
         uses: Azure/data-factory-deploy-action@v1.2.0
         with:
           resourceGroupName: rg-app-fss-tmp-prod-scus-001
-          dataFactoryName: adf-app-fss-tmp-prod-scus-001   
+          dataFactoryName: adf-app-fss-tmp-prod-scus-001  
           armTemplateFile: ARMTemplateForFactory.json
           armTemplateParametersFile: ARMTemplateParametersForFactory.json
