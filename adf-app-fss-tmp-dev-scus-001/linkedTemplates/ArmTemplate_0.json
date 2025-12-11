@@ -968,7 +968,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "PROD_PWC_Extract_Account",
+						"fileName": "PROD_PWC_Extract_Account_2025_12_9.csv",
 						"folderPath": "InitialData",
 						"container": "fss"
 					},
@@ -979,7 +979,7 @@
 				},
 				"schema": [
 					{
-						"name": "PWC_Key",
+						"name": "ACCOUNTNUMBER",
 						"type": "String"
 					},
 					{
@@ -1754,7 +1754,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "PROD_PWC_Extract_Name",
+						"fileName": "PROD_PWC_Extract_Name_2025_12_9.csv",
 						"folderPath": "InitialData",
 						"container": "fss"
 					},
@@ -1765,7 +1765,7 @@
 				},
 				"schema": [
 					{
-						"name": "PWC_Key",
+						"name": "PARENTACCOUNT",
 						"type": "String"
 					},
 					{

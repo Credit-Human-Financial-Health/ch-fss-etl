@@ -135,7 +135,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "PROD_PWC_Extract_Savings",
+						"fileName": "PROD_PWC_Extract_Savings_2025_12_9.csv",
 						"folderPath": "InitialData",
 						"container": "fss"
 					},
@@ -146,7 +146,7 @@
 				},
 				"schema": [
 					{
-						"name": "PWC_Key",
+						"name": "PARENTACCOUNT",
 						"type": "String"
 					},
 					{
@@ -954,6 +954,10 @@
 						"type": "String"
 					},
 					{
+						"name": "MICRACCTNUMBER",
+						"type": "String"
+					},
+					{
 						"name": "UNPAIDFEEYTD",
 						"type": "String"
 					},
@@ -1500,7 +1504,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "PROD_PWC_Trans_2024_2025_Sample",
+						"fileName": "PROD_PWC_Trans_2024_2025_Sample_2025_12_9.csv",
 						"folderPath": "InitialData",
 						"container": "fss"
 					},
@@ -1563,7 +1567,7 @@
 						"type": "String"
 					},
 					{
-						"name": "PWC_key",
+						"name": "PARENTACCOUNT",
 						"type": "String"
 					}
 				]
@@ -2126,7 +2130,7 @@
 					],
 					"scriptLines": [
 						"source(output(",
-						"          PWC_Key as string,",
+						"          ACCOUNTNUMBER as string,",
 						"          TYPE as string,",
 						"          LASTFMDATE as string,",
 						"          OPENDATE as string,",
@@ -2321,14 +2325,14 @@
 						"     assertFailure_fileSystem: 'fss',",
 						"     assertFailure_folderPath: 'error',",
 						"     mapColumn(",
-						"          account_id = PWC_Key,",
+						"          account_id = ACCOUNTNUMBER,",
 						"          open_date = OPENDATE,",
 						"          close_date = CLOSEDATE,",
 						"          branch = BRANCH,",
 						"          status = MEMBERSTATUS,",
 						"          account_type_id = TYPE,",
 						"          product_id,",
-						"          anonymized_member_id = PWC_Key",
+						"          anonymized_member_id = ACCOUNTNUMBER",
 						"     ),",
 						"     partitionBy('hash', 1)) ~> MEMBERSINKCSV"
 					]
@@ -2371,7 +2375,7 @@
 					],
 					"scriptLines": [
 						"source(output(",
-						"          PWC_Key as string,",
+						"          PARENTACCOUNT as string,",
 						"          ORDINAL as string,",
 						"          TYPE as string,",
 						"          SUBTYPE as string,",
@@ -2557,7 +2561,7 @@
 						"     upsertable:false,",
 						"     format: 'table',",
 						"     mapColumn(",
-						"          member_id = PWC_Key,",
+						"          member_id = PARENTACCOUNT,",
 						"          name,",
 						"          last_name = LAST,",
 						"          address = STREET,",
@@ -2741,7 +2745,7 @@
 					],
 					"scriptLines": [
 						"source(output(",
-						"          PWC_Key as string,",
+						"          PARENTACCOUNT as string,",
 						"          ID as string,",
 						"          CHECKDIGITS as string,",
 						"          TYPE as string,",
@@ -2943,6 +2947,7 @@
 						"          PREMTHDIVEARNED12 as string,",
 						"          MTDPRIORRATEACCRUAL as string,",
 						"          LASTACCRUALUPDATEDATE as string,",
+						"          MICRACCTNUMBER as string,",
 						"          UNPAIDFEEYTD as string,",
 						"          UNPAIDFEELASTYEAR as string,",
 						"          OVERDRAFTFEEYTD as string,",
@@ -3014,7 +3019,7 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     partitionBy('hash', 1)) ~> SHAREACCOUNTSOURCE",
-						"SHAREACCOUNTSOURCE derive(share_id = concat(PWC_Key, ID),",
+						"SHAREACCOUNTSOURCE derive(share_id = concat(PARENTACCOUNT, ID),",
 						"     partitionBy('hash', 1)) ~> COLUMNSDERIVED",
 						"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -3044,7 +3049,7 @@
 						"     format: 'table',",
 						"     mapColumn(",
 						"          share_id,",
-						"          account_id = PWC_Key,",
+						"          account_id = PARENTACCOUNT,",
 						"          min_balance = MINIMUMBALANCE,",
 						"          open_date = OPENDATE,",
 						"          close_date = CLOSEDATE,",
@@ -3544,7 +3549,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('member_account_data').status, '''', ',',\n  if(\n    equals(activity('member_account_data').status, 'Failed'),\n    concat('''', replace(activity('member_account_data').error.message.details, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
+										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('member_account_data').status, '''', ',',\n  if(\n    equals(activity('member_account_data').status, 'Failed'),\n    concat('''', replace(activity('member_account_data').ERROR.message, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
 										"type": "Expression"
 									}
 								}
@@ -3836,7 +3841,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('MEMBERDETAILS').status, '''', ',',\n  if(\n    equals(activity('MEMBERDETAILS').status, 'Failed'),\n    concat('''', replace(activity('MEMBERDETAILS').error.message, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
+										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('MEMBERDETAILS').status, '''', ',',\n  if(\n    equals(activity('MEMBERDETAILS').status, 'Failed'),\n    concat('''', replace(activity('MEMBERDETAILS').ERROR.message, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
 										"type": "Expression"
 									}
 								}
@@ -4180,7 +4185,7 @@
 								{
 									"type": "Query",
 									"text": {
-										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('SHAREACCOUNT').status, '''', ',',\n  if(\n    equals(activity('SHAREACCOUNT').status, 'Failed'),\n    concat('''', replace(activity('SHAREACCOUNT').error.message.details, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
+										"value": "@concat(\n  'insert into ch_fss.job_run_status (pl_name, pl_runid, pl_triggertime, pl_triggertype, End_time, Start_time, status, error_message) values (',\n  '''', pipeline().Pipeline, '''', ',',\n  '''', pipeline().RunId, '''', ',',\n  '''', formatDateTime(pipeline().TriggerTime, 'yyyy-MM-dd HH:mm:ss'), '''', ',',\n  '''', pipeline().TriggerType, '''', ',',\n  '''', variables('end_time'), '''', ',',\n  '''', variables('start_time'), '''', ',',\n  '''', activity('SHAREACCOUNT').status, '''', ',',\n  if(\n    equals(activity('SHAREACCOUNT').status, 'Failed'),\n    concat('''', replace(activity('SHAREACCOUNT').ERROR.message, '''', ''''''), ''''),\n    'NULL'\n  ),\n  ')'\n)",
 										"type": "Expression"
 									}
 								}
