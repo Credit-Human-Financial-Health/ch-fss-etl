@@ -236,8 +236,7 @@
 				"          branch = BRANCH,",
 				"          status = MEMBERSTATUS,",
 				"          account_type_id = TYPE,",
-				"          product_id,",
-				"          anonymized_member_id = ACCOUNTNUMBER",
+				"          product_id",
 				"     ),",
 				"     partitionBy('hash', 1)) ~> MEMBERSINKCSV"
 			]

@@ -27,6 +27,9 @@
 			"transformations": [
 				{
 					"name": "COLUMNSDERIVED"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -186,9 +189,10 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     partitionBy('hash', 1)) ~> MEMBERDETAILSSOURCE",
-				"MEMBERDETAILSSOURCE derive(name = replace(FIRST, char(0), ''),",
+				"filter1 derive(name = replace(FIRST, char(0), ''),",
 				"          state = substring(rtrim(STATE), 1, 2),",
 				"     partitionBy('hash', 1)) ~> COLUMNSDERIVED",
+				"MEMBERDETAILSSOURCE filter(TYPE == '0') ~> filter1",
 				"COLUMNSDERIVED sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
